@@ -1,6 +1,6 @@
-import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
+import 'package:flutter_meitou/widget/user_profile.dart';
 import 'package:web_socket_channel/io.dart';
 
 void main() => runApp(MyApp());
@@ -25,6 +25,49 @@ class _RandomWordsState extends State<RandomWords> {
   final _suggestions = <WordPair>[];
   final _saved = Set<WordPair>();
   final _biggerFont = TextStyle(fontSize: 18.0);
+  var _index = 0;
+  final List<Widget> children = [
+    Placeholder(),
+    Placeholder(),
+    Placeholder(),
+    UserProfile()
+  ];
+
+  final List<Widget> appbars = [
+    Placeholder(),
+    Placeholder(),
+    Placeholder(),
+    Placeholder(),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    children[0] = ListView.builder(
+      padding: EdgeInsets.all(20.0),
+      itemBuilder: (context, i) {
+        if (i.isOdd) return Divider();
+
+        final index = i ~/ 2;
+        if (index >= _suggestions.length) {
+          _suggestions.addAll(generateWordPairs().take(1));
+        }
+        return _buildRow(_suggestions[index]);
+      },
+    );
+
+    final mainAppBar = AppBar(
+      title: Text('Cool Name Generator'),
+      actions: [IconButton(icon: Icon(Icons.list), onPressed: _pushSaved)],
+    );
+    appbars[0] = mainAppBar;
+    appbars[1] = mainAppBar;
+    appbars[2] = mainAppBar;
+    appbars[3] = AppBar(
+      title: Text('我的信息'),
+      actions: [IconButton(icon: Icon(Icons.add), onPressed: _moreOnMe)],
+    );
+  }
 
   Widget _buildSuggestions() {
     return ListView.builder(
@@ -62,25 +105,36 @@ class _RandomWordsState extends State<RandomWords> {
         });
       },
       onLongPress: () {
-        final wsEndpoint =
-            'wss://efcine0oul.execute-api.us-west-2.amazonaws.com/play';
-        final channel = IOWebSocketChannel.connect(wsEndpoint);
-        final channelId = 'b6e83bbf-847d-49f4-a3e6-782e4731c0b7';
-        final userName = 'rain1993';
-        final data =
-            '{ "action": "onMessage", "message": "$userName#->\$$channelId" }';
-        channel.sink.add(data);
-        //channel.sink.add('good');
-        final message =
-            '{"action":"onMessage","message":"手机#{\\"channelId\\":\\"b10844e8-2cb2-433d-bbbd-e5eebee332a4\\",\\"msg\\":\\"手机测试\\",\\"hashtags\\":\\"aws\\"}"}';
-        // '{"action":"onMessage","message":"92#{\"channelId\":\"b10844e8-2cb2-433d-bbbd-e5eebee332a4\",\"msg\":\"message one\",\"hashtags\":\"aws\"}"}';
-        channel.sink.add(message);
-        channel.sink.close();
+        // final wsEndpoint =
+        //     'wss://efcine0oul.execute-api.us-west-2.amazonaws.com/play';
+        // final channel = IOWebSocketChannel.connect(wsEndpoint);
+        // final channelId = 'b6e83bbf-847d-49f4-a3e6-782e4731c0b7';
+        // final userName = 'rain1993';
+        // final data =
+        //     '{ "action": "onMessage", "message": "$userName#->\$$channelId" }';
+        // channel.sink.add(data);
+        // //channel.sink.add('good');
+        // final message =
+        //     '{"action":"onMessage","message":"手机#{\\"channelId\\":\\"b10844e8-2cb2-433d-bbbd-e5eebee332a4\\",\\"msg\\":\\"手机测试\\",\\"hashtags\\":\\"aws\\"}"}';
+        // // '{"action":"onMessage","message":"92#{\"channelId\":\"b10844e8-2cb2-433d-bbbd-e5eebee332a4\",\"msg\":\"message one\",\"hashtags\":\"aws\"}"}';
+        // channel.sink.add(message);
+        // channel.sink.close();
       },
     );
   }
 
   void _pushSaved() {
+    Navigator.of(context)
+        .push(MaterialPageRoute<void>(builder: (BuildContext context) {
+      return Scaffold(
+          appBar: AppBar(
+            title: Text('我的其他骚操作'),
+          ),
+          body: Text('operational excellence'));
+    }));
+  }
+
+  void _moreOnMe() {
     Navigator.of(context)
         .push(MaterialPageRoute<void>(builder: (BuildContext context) {
       final tiles = this._saved.map(
@@ -112,11 +166,8 @@ class _RandomWordsState extends State<RandomWords> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Cool Name Generator'),
-        actions: [IconButton(icon: Icon(Icons.list), onPressed: _pushSaved)],
-      ),
-      body: _buildSuggestions(),
+      appBar: appbars[_index],
+      body: children[_index],
       bottomNavigationBar: new Theme(
           data: Theme.of(context).copyWith(
             canvasColor: Colors.lightGreen,
@@ -126,15 +177,22 @@ class _RandomWordsState extends State<RandomWords> {
                 .copyWith(caption: new TextStyle(color: Colors.white)),
           ),
           child: new BottomNavigationBar(
+            onTap: (index) {
+              setState(() {
+                _index = index;
+              });
+            },
             type: BottomNavigationBarType.fixed,
-            currentIndex: 2,
+            currentIndex: _index,
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                   icon: Icon(Icons.accessibility), label: '搞社交'),
               BottomNavigationBarItem(icon: Icon(Icons.chat), label: '去聊天'),
               BottomNavigationBarItem(icon: Icon(Icons.book), label: '受教育'),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.account_circle), label: '我的'),
+                icon: Icon(Icons.account_circle),
+                label: '我的',
+              ),
             ],
           )),
     );
