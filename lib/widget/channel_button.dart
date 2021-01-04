@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_meitou/model/channel.dart';
+import 'package:flutter_meitou/widget/chat_board.dart';
 
 class ChannelButton extends StatelessWidget {
   final Channel channel;
   ChannelButton({this.channel});
 
-  void _channelTapped() {
+  void _channelTapped(context) {
     print(channel.name);
+    Navigator.of(context)
+        .push(MaterialPageRoute<void>(builder: (BuildContext context) {
+      return Scaffold(
+          appBar: AppBar(
+            title: Text('开一个新的频道吧'),
+          ),
+          body: Text('你有什么想说的'));
+    }));
   }
 
   @override
@@ -29,7 +38,13 @@ class ChannelButton extends StatelessWidget {
           color: Colors.blueGrey,
         ),
       ),
-      onTap: _channelTapped,
+      onTap: () {
+        print(channel.name);
+        Navigator.of(context)
+            .push(MaterialPageRoute<void>(builder: (BuildContext context) {
+          return ChatBoard(channel);
+        }));
+      },
     );
   }
 }

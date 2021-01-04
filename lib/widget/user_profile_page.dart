@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_meitou/widget/transaction.dart';
 import 'package:http/http.dart' as http;
@@ -51,7 +52,7 @@ class _UserProfileState extends State<UserProfile> {
         color: Colors.white,
         margin: EdgeInsets.only(top: 10),
         child: SizedBox(
-            height: 360,
+            height: 200,
             child: ListView.builder(
               itemCount: items.length,
               itemExtent: 40,
@@ -116,10 +117,48 @@ class _UserProfileState extends State<UserProfile> {
         body: Container(
             color: Colors.white,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildUserInfo(),
                 _buildTransList(),
+                Padding(
+                    padding: EdgeInsets.only(top: 10, left: 10),
+                    child: Text('我的订阅频道们')),
+                _buildSubscriptionList(),
               ],
+            )));
+  }
+
+  Widget _buildSubscriptionList() {
+    return Container(
+        color: Colors.white,
+        margin: EdgeInsets.only(top: 10),
+        child: SizedBox(
+            height: 150,
+            child: ListView.builder(
+              itemCount: 3,
+              itemExtent: 40,
+              itemBuilder: (context, index) {
+                return Container(
+                  margin: EdgeInsets.all(5),
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    Padding(
+                        padding: EdgeInsets.only(left: 10, right: 5),
+                        child: Text(
+                          '## Channnnnnn \$5 per month',
+                          textScaleFactor: 1.2,
+                        )),
+                    Icon(Icons.album_outlined, color: Colors.yellow),
+                  ]),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.lightGreen,
+                    boxShadow: [
+                      BoxShadow(color: Colors.white, spreadRadius: 3),
+                    ],
+                  ),
+                );
+              },
             )));
   }
 }
