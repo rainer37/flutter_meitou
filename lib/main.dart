@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
-import 'package:flutter_meitou/widget/user_profile.dart';
-import 'package:web_socket_channel/io.dart';
+import 'package:flutter_meitou/widget/chat_page.dart';
+import 'package:flutter_meitou/widget/user_profile_page.dart';
 
 void main() => runApp(MyApp());
 
@@ -28,7 +28,7 @@ class _RandomWordsState extends State<RandomWords> {
   var _index = 0;
   final List<Widget> children = [
     Placeholder(),
-    Placeholder(),
+    ChatPage(),
     Placeholder(),
     UserProfile()
   ];
@@ -57,11 +57,14 @@ class _RandomWordsState extends State<RandomWords> {
     );
 
     final mainAppBar = AppBar(
-      title: Text('Cool Name Generator'),
+      title: Text('美投'),
       actions: [IconButton(icon: Icon(Icons.list), onPressed: _pushSaved)],
     );
     appbars[0] = mainAppBar;
-    appbars[1] = mainAppBar;
+    appbars[1] = AppBar(
+      title: Text('话题频道'),
+      actions: [IconButton(icon: Icon(Icons.add), onPressed: _addChannel)],
+    );
     appbars[2] = mainAppBar;
     appbars[3] = AppBar(
       title: Text('我的信息'),
@@ -123,7 +126,7 @@ class _RandomWordsState extends State<RandomWords> {
     );
   }
 
-  void _pushSaved() {
+  void _moreOnMe() {
     Navigator.of(context)
         .push(MaterialPageRoute<void>(builder: (BuildContext context) {
       return Scaffold(
@@ -134,7 +137,18 @@ class _RandomWordsState extends State<RandomWords> {
     }));
   }
 
-  void _moreOnMe() {
+  void _addChannel() {
+    Navigator.of(context)
+        .push(MaterialPageRoute<void>(builder: (BuildContext context) {
+      return Scaffold(
+          appBar: AppBar(
+            title: Text('开一个新的频道吧'),
+          ),
+          body: Text('你有什么想说的'));
+    }));
+  }
+
+  void _pushSaved() {
     Navigator.of(context)
         .push(MaterialPageRoute<void>(builder: (BuildContext context) {
       final tiles = this._saved.map(

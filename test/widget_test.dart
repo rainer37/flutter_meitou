@@ -14,9 +14,9 @@ void main() {
   testWidgets('Main Page Sanity Test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MyApp());
-
+    final appTitle = '美投';
     // Verify that our counter starts at 0.
-    expect(find.text('Cool Name Generator'), findsOneWidget);
+    expect(find.text(appTitle), findsOneWidget);
     expect(find.text('1'), findsNothing);
 
     // Tap the '+' icon and trigger a frame.
@@ -25,6 +25,6 @@ void main() {
 
     // Verify that our counter has incremented.
     expect(find.text('0'), findsNothing);
-    expect(find.text('Cool Name Generator'), findsOneWidget);
+    expect(find.text(appTitle), findsOneWidget);
   });
 }
