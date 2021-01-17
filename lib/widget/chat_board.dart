@@ -66,7 +66,7 @@ class _ChatBoardState extends State<ChatBoard> {
       floatingActionButton: new FloatingActionButton(
         child: new Icon(Icons.add),
         onPressed: () {
-          print('floating');
+          print('floating button clicked');
           //_focusNode.unfocus(); //3 - call this method here
         },
       ),

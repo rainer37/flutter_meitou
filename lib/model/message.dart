@@ -1,22 +1,43 @@
-class HashTag {
-  String content;
-}
+import 'dart:convert';
 
 class Message {
-  String id, senderId;
-  List<HashTag> hashtags;
-  Message(this.id, this.senderId);
-}
+  String channelId, senderId, content, hashtags, lastUpdatedAt;
+  Message(this.channelId, this.senderId, this.content, this.hashtags,
+      this.lastUpdatedAt);
 
-class ImageMessage extends Message {
-  String imgUrl;
-
-  ImageMessage(String id, String senderId, String imgUrl)
-      : super(id, senderId) {
-    this.imgUrl = imgUrl;
+  String toJSON() {
+    return json.encode({
+      'channel_id': this.channelId,
+      'msg_sk': "${this.lastUpdatedAt}#${this.senderId}",
+      'sender_id': this.senderId,
+      'content': this.content,
+      'hashtags': this.hashtags,
+      'last_updated_at': this.lastUpdatedAt,
+    });
   }
-}
 
-class QueryMessage extends Message {
-  QueryMessage(String id, senderId) : super(id, senderId);
+  static Message fromJSON(String msgJSON) {
+    Map<String, dynamic> m = json.decode(msgJSON);
+    return Message(m['channel_id'], m['sender_id'], m['content'], m['hashtags'],
+        m['last_updated_at']);
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Message &&
+          runtimeType == other.runtimeType &&
+          channelId == other.channelId &&
+          senderId == other.senderId &&
+          content == other.content &&
+          hashtags == other.hashtags &&
+          lastUpdatedAt == other.lastUpdatedAt;
+
+  @override
+  int get hashCode =>
+      channelId.hashCode ^
+      senderId.hashCode ^
+      content.hashCode ^
+      hashtags.hashCode ^
+      lastUpdatedAt.hashCode;
 }
