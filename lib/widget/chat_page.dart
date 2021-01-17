@@ -8,12 +8,14 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  final List<Channel> hot_channels = [
-    Channel('cb-12', 'CyberPunk', 'Channel for 2077', '123-456-abc-222', 5),
-    Channel('rc-29', 'RainChan', 'Channel for Rain', '777-888-999-nnn', 2),
+  final List<Channel> hotChannels = [
+    Channel('191cb3bb-8396-4b52-b47c-76a26e645e9a', 'CyberPunk',
+        'Channel for 2077', '123-456-abc-222', 5),
+    Channel('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'RainChan',
+        'Channel for Rain', '777-888-999-nnn', 2),
   ];
 
-  final List<Channel> my_channels = [
+  final List<Channel> myChannels = [
     Channel.withSub(
         'rpc-33', 'RainPrivateChan', '神奇的小频道', '123-123-444-aaa', 50, true),
   ];
@@ -49,11 +51,11 @@ class _ChatPageState extends State<ChatPage> {
                 Padding(
                     padding: EdgeInsets.only(top: 10, left: 10),
                     child: Text('热门频道')),
-                _buildChannelList(hot_channels),
+                _buildChannelList(hotChannels),
                 Padding(
                     padding: EdgeInsets.only(top: 10, left: 10),
                     child: Text('我的频道')),
-                _buildChannelList(my_channels),
+                _buildChannelList(myChannels),
               ],
             )));
   }

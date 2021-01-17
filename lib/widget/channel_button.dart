@@ -39,7 +39,7 @@ class ChannelButton extends StatelessWidget {
         ),
       ),
       onTap: () {
-        print(channel.name);
+        print('clicking on ' + channel.name);
         Navigator.of(context)
             .push(MaterialPageRoute<void>(builder: (BuildContext context) {
           return ChatBoard(channel);
