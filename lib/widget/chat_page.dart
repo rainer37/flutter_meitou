@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_meitou/model/channel.dart';
 import 'package:flutter_meitou/widget/channel_button.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
 
 class ChatPage extends StatefulWidget {
   @override
@@ -8,12 +10,7 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  List<Channel> hotChannels = [
-    Channel('191cb3bb-8396-4b52-b47c-76a26e645e9a', 'CyberPunk',
-        'Channel for 2077', '123-456-abc-222', 5),
-    Channel('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'RainChan',
-        'Channel for Rain', '777-888-999-nnn', 2),
-  ];
+  List<Channel> hotChannels = [];
 
   List<Channel> myChannels = [
     Channel.withSub(
@@ -26,14 +23,33 @@ class _ChatPageState extends State<ChatPage> {
     _fetchChannels();
   }
 
-  void _fetchChannels() {}
+  void _fetchChannels() async {
+    var url = "https://ben62z58pk.execute-api.us-west-2.amazonaws.com/channels";
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      var jsonResponse = convert.jsonDecode(response.body);
+      // print(jsonResponse);
+
+      // var itemCount = jsonResponse['totalItems'];
+      // print('Number of books about http: $jsonResponse.');
+      // print("${jsonResponse['user_name']['S']}");
+      setState(() {
+        for (var ch in jsonResponse) {
+          hotChannels.add(Channel(ch['channel_id'], ch['channel_name'],
+              ch['channel_desc'], ch['owner'], int.parse(ch['sub_fee'])));
+        }
+      });
+    } else {
+      print('Request failed with status: ${response.statusCode}.');
+    }
+  }
 
   Widget _buildChannelList(channels) {
     return Container(
         color: Colors.white,
         margin: EdgeInsets.only(top: 10),
         child: SizedBox(
-            height: 130,
+            height: 230,
             child: ListView.separated(
               separatorBuilder: (context, index) => Divider(
                 color: Colors.white,
