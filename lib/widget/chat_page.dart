@@ -8,17 +8,25 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  final List<Channel> hotChannels = [
+  List<Channel> hotChannels = [
     Channel('191cb3bb-8396-4b52-b47c-76a26e645e9a', 'CyberPunk',
         'Channel for 2077', '123-456-abc-222', 5),
     Channel('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'RainChan',
         'Channel for Rain', '777-888-999-nnn', 2),
   ];
 
-  final List<Channel> myChannels = [
+  List<Channel> myChannels = [
     Channel.withSub(
         'rpc-33', 'RainPrivateChan', '神奇的小频道', '123-123-444-aaa', 50, true),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchChannels();
+  }
+
+  void _fetchChannels() {}
 
   Widget _buildChannelList(channels) {
     return Container(

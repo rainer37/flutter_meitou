@@ -6,18 +6,6 @@ class ChannelButton extends StatelessWidget {
   final Channel channel;
   ChannelButton({this.channel});
 
-  void _channelTapped(context) {
-    print(channel.name);
-    Navigator.of(context)
-        .push(MaterialPageRoute<void>(builder: (BuildContext context) {
-      return Scaffold(
-          appBar: AppBar(
-            title: Text('开一个新的频道吧'),
-          ),
-          body: Text('你有什么想说的'));
-    }));
-  }
-
   @override
   Widget build(BuildContext context) {
     return ListTile(

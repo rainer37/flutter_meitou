@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_meitou/model/channel.dart';
 import 'package:flutter_meitou/model/message.dart';
 import 'package:flutter_meitou/model/socket_warrior.dart';
+import 'package:flutter_meitou/model/user.dart';
+import 'package:flutter_meitou/widget/message_line.dart';
 
 class ChatBoard extends StatefulWidget {
   final Channel channel;
@@ -10,6 +12,57 @@ class ChatBoard extends StatefulWidget {
   _ChatBoardState createState() => _ChatBoardState();
 }
 
+final userOne = User('u-0-0-1', 'UserOne', '',
+    'https://techcrunch.com/wp-content/uploads/2018/07/logo-2.png');
+final userTwo = User('u-0-0-2', 'ClientTwo', '',
+    'https://image.shutterstock.com/image-photo/image-260nw-551769190.jpg');
+
+var fakeUsers = [
+  userOne,
+  userTwo,
+  userOne,
+  userTwo,
+  userOne,
+  userTwo,
+  userOne,
+  userTwo,
+  userOne,
+  userTwo,
+  userOne,
+  userTwo,
+];
+
+var fakeMessages = [
+  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserOne', 'hello A',
+      'tag1,wz', '1610930682209'),
+  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserTwo', 'hello echo A',
+      'tag1,wz', '1610930682210'),
+  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserOne', 'hello B',
+      'tag1,wz', '1610930682212'),
+  Message(
+      '0e0cdd58-c7e1-4212-b75c-f27f9c430290',
+      'UserTwo',
+      'hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B',
+      'tag1,wz',
+      '1610930682209'),
+  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserOne', 'hello C',
+      'tag1,wz', '1610930682219'),
+  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserTwo', 'hello echo C',
+      'tag1,wz', '1610930682229'),
+  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserOne', 'hello D',
+      'tag1,wz', '1610930682239'),
+  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserTwo', 'hello echo D',
+      'tag1,wz', '1610930682249'),
+  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserOne', 'hello E',
+      'tag1,wz', '1610930682259'),
+  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserTwo', 'hello echo E',
+      'tag1,wz', '1610930682269'),
+  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserOne', 'hello F',
+      'tag1,wz', '1610930682279'),
+  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserTwo', 'hello echo F',
+      'tag1,wz', '1610930682299'),
+];
+
 class _ChatBoardState extends State<ChatBoard> {
   var _controller = TextEditingController();
   SocketWarrior sw;
@@ -17,6 +70,7 @@ class _ChatBoardState extends State<ChatBoard> {
   @override
   void initState() {
     super.initState();
+
     sw = SocketWarrior(widget.channel.id);
     String serverEndpoint =
         'wss://4f6y995d0d.execute-api.us-west-2.amazonaws.com/dev';
@@ -51,13 +105,14 @@ class _ChatBoardState extends State<ChatBoard> {
                       onTap: () {
                         // Update the state of the app.
                         // ...
+                        print('所有问题 tapped');
                       },
                     ),
                     ListTile(
                       title: Text('所有标签'),
                       onTap: () {
                         // Update the state of the app.
-                        // ...
+                        print('所有标签 tapped');
                       },
                     ),
                   ],
@@ -89,9 +144,19 @@ class _ChatBoardState extends State<ChatBoard> {
               Expanded(
                   child: Container(
                 color: Colors.black,
+                child: ListView.separated(
+                  separatorBuilder: (context, index) => Divider(
+                    color: Colors.white,
+                    height: 3,
+                  ),
+                  itemCount: fakeMessages.length,
+                  itemBuilder: (context, index) {
+                    return MessageLine(fakeMessages[index], fakeUsers[index]);
+                  },
+                ),
               )),
               Container(
-                height: 30,
+                height: 20,
                 color: Colors.lightGreen,
               ),
               Padding(
