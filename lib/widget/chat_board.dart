@@ -81,101 +81,105 @@ class _ChatBoardState extends State<ChatBoard> {
   Widget build(BuildContext context) {
     print('current channel ' + widget.channel.name);
     return WillPopScope(
-        child: Scaffold(
-          endDrawer: Container(
-              width: 150,
-              child: Drawer(
-                // Add a ListView to the drawer. This ensures the user can scroll
-                // through the options in the drawer if there isn't enough vertical
-                // space to fit everything.
-                child: ListView(
-                  // Important: Remove any padding from the ListView.
-                  padding: EdgeInsets.zero,
-                  children: <Widget>[
-                    Container(
-                        height: 120,
-                        child: DrawerHeader(
-                          child: Text('额外操作'),
-                          decoration: BoxDecoration(
-                            color: Colors.lightGreen,
-                          ),
-                        )),
-                    ListTile(
-                      title: Text('所有问题'),
-                      onTap: () {
-                        // Update the state of the app.
-                        // ...
-                        print('所有问题 tapped');
-                      },
+        child: SafeArea(
+            bottom: true,
+            child: Scaffold(
+              endDrawer: Container(
+                  width: 150,
+                  child: Drawer(
+                    // Add a ListView to the drawer. This ensures the user can scroll
+                    // through the options in the drawer if there isn't enough vertical
+                    // space to fit everything.
+                    child: ListView(
+                      // Important: Remove any padding from the ListView.
+                      padding: EdgeInsets.zero,
+                      children: <Widget>[
+                        Container(
+                            height: 120,
+                            child: DrawerHeader(
+                              child: Text('额外操作'),
+                              decoration: BoxDecoration(
+                                color: Colors.lightGreen,
+                              ),
+                            )),
+                        ListTile(
+                          title: Text('所有问题'),
+                          onTap: () {
+                            // Update the state of the app.
+                            // ...
+                            print('所有问题 tapped');
+                          },
+                        ),
+                        ListTile(
+                          title: Text('所有标签'),
+                          onTap: () {
+                            // Update the state of the app.
+                            print('所有标签 tapped');
+                          },
+                        ),
+                      ],
                     ),
-                    ListTile(
-                      title: Text('所有标签'),
-                      onTap: () {
-                        // Update the state of the app.
-                        print('所有标签 tapped');
-                      },
-                    ),
-                  ],
-                ),
-              )),
-          appBar: AppBar(
-            title:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(widget.channel.name),
-              Text(
-                widget.channel.desc,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Colors.yellow,
-                ),
-              )
-            ]),
-            // actions: [IconButton(icon: Icon(Icons.menu), onPressed: () => {})]
-          ),
-          floatingActionButton: new FloatingActionButton(
-            child: new Icon(Icons.add),
-            onPressed: () {
-              print('floating button clicked');
-              //_focusNode.unfocus(); //3 - call this method here
-            },
-          ),
-          body: Column(
-            children: [
-              Expanded(
-                  child: Container(
-                color: Colors.black,
-                child: ListView.separated(
-                  separatorBuilder: (context, index) => Divider(
-                    color: Colors.white,
-                    height: 3,
-                  ),
-                  itemCount: fakeMessages.length,
-                  itemBuilder: (context, index) {
-                    return MessageLine(fakeMessages[index], fakeUsers[index]);
-                  },
-                ),
-              )),
-              Container(
-                height: 20,
-                color: Colors.lightGreen,
+                  )),
+              appBar: AppBar(
+                title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(widget.channel.name),
+                      Text(
+                        widget.channel.desc,
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.yellow,
+                        ),
+                      )
+                    ]),
+                // actions: [IconButton(icon: Icon(Icons.menu), onPressed: () => {})]
               ),
-              Padding(
-                padding: EdgeInsets.only(left: 10, right: 10),
-                child: TextFormField(
-                  controller: _controller,
-                  decoration: InputDecoration(
-                      labelText: '想什么呢，跟我们说说吧',
-                      suffixIcon: IconButton(
-                          icon: Icon(Icons.delete_forever),
-                          onPressed: () {
-                            _controller.clear();
-                          })),
-                  onFieldSubmitted: _sendClicked,
-                ),
-              )
-            ],
-          ),
-        ),
+              floatingActionButton: new FloatingActionButton(
+                child: new Icon(Icons.add),
+                onPressed: () {
+                  print('floating button clicked');
+                  //_focusNode.unfocus(); //3 - call this method here
+                },
+              ),
+              body: Column(
+                children: [
+                  Expanded(
+                      child: Container(
+                    color: Colors.black,
+                    child: ListView.separated(
+                      separatorBuilder: (context, index) => Divider(
+                        color: Colors.white,
+                        height: 3,
+                      ),
+                      itemCount: fakeMessages.length,
+                      itemBuilder: (context, index) {
+                        return MessageLine(
+                            fakeMessages[index], fakeUsers[index]);
+                      },
+                    ),
+                  )),
+                  Container(
+                    height: 20,
+                    color: Colors.lightGreen,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 10, right: 10),
+                    child: TextFormField(
+                      controller: _controller,
+                      decoration: InputDecoration(
+                          labelText: '想什么呢，跟我们说说吧',
+                          suffixIcon: IconButton(
+                              icon: Icon(Icons.delete_forever),
+                              onPressed: () {
+                                _controller.clear();
+                              })),
+                      onFieldSubmitted: _sendClicked,
+                    ),
+                  )
+                ],
+              ),
+            )),
         onWillPop: _onPageExit);
   }
 
