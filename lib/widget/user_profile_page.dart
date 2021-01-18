@@ -4,6 +4,8 @@ import 'package:flutter_meitou/widget/transaction.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
+Map<String, dynamic> userConfig = {};
+
 class UserProfile extends StatefulWidget {
   @override
   _UserProfileState createState() => _UserProfileState();
@@ -25,6 +27,14 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   void _fetchUserInfo() async {
+    if (userConfig.containsKey('user_name') &&
+        userConfig.containsKey('coins')) {
+      setState(() {
+        _userName = userConfig['user_name'];
+        _coin = userConfig['coins'];
+      });
+      return;
+    }
     final user_id = '198405c8-ca46-4818-ab51-5b612149d2d1';
     var url =
         "https://usdeuu1gp5.execute-api.us-west-2.amazonaws.com/user/$user_id/info";
@@ -34,6 +44,8 @@ class _UserProfileState extends State<UserProfile> {
       // var itemCount = jsonResponse['totalItems'];
       // print('Number of books about http: $jsonResponse.');
       // print("${jsonResponse['user_name']['S']}");
+      userConfig['user_name'] = jsonResponse['user_name']['S'];
+      userConfig['coins'] = int.parse(jsonResponse['coins']['N']);
       setState(() {
         _userName = jsonResponse['user_name']['S'];
         _coin = int.parse(jsonResponse['coins']['N']);
