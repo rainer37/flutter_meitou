@@ -30,25 +30,28 @@ var fakeUsers = [
   userTwo,
   userOne,
   userTwo,
+  userTwo,
+  userTwo,
+  userTwo,
 ];
 
 var fakeMessages = [
   Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserOne', 'hello A',
       'tag1,wz', '1610930682209'),
   Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserTwo', 'hello echo A',
-      'tag1,wz', '1610930682210'),
+      'AZ,wz', '1610930682210'),
   Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserOne', 'hello B',
-      'tag1,wz', '1610930682212'),
+      'tag88,w222', '1610930682212'),
   Message(
       '0e0cdd58-c7e1-4212-b75c-f27f9c430290',
       'UserTwo',
       'hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B',
-      'tag1,wz',
+      'tag1,AZ',
       '1610930682209'),
   Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserOne', 'hello C',
       'tag1,wz', '1610930682219'),
   Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserTwo', 'hello echo C',
-      'tag1,wz', '1610930682229'),
+      'tag88,wz', '1610930682229'),
   Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserOne', 'hello D',
       'tag1,wz', '1610930682239'),
   Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserTwo', 'hello echo D',
@@ -56,9 +59,9 @@ var fakeMessages = [
   Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserOne', 'hello E',
       'tag1,wz', '1610930682259'),
   Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserTwo', 'hello echo E',
-      'tag1,wz', '1610930682269'),
-  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserOne', 'hello F',
-      'tag1,wz', '1610930682279'),
+      'tag0,AZ', '1610930682269'),
+  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserOne', 'hello F', 'tag0',
+      '1610930682279'),
   Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserTwo', 'hello echo F',
       'tag1,wz', '1610930682299'),
 ];
@@ -66,7 +69,9 @@ var fakeMessages = [
 class _ChatBoardState extends State<ChatBoard> {
   var _controller = TextEditingController();
   var _tagController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
 
+  bool _needsScroll = false;
   SocketWarrior sw;
   var messages = [];
 
@@ -78,11 +83,31 @@ class _ChatBoardState extends State<ChatBoard> {
     String serverEndpoint =
         'wss://4f6y995d0d.execute-api.us-west-2.amazonaws.com/dev';
     sw.open(serverEndpoint);
+    sw.openConn.stream.listen((event) {
+      print(event);
+      Message msg = Message.fromJSON(event);
+      this.setState(() {
+        messages.add(msg);
+        _needsScroll = true;
+      });
+    });
+  }
+
+  _scrollToEnd() async {
+    print('scrolling to the end');
+    _scrollController.animateTo(_scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 800), curve: Curves.ease);
+    _needsScroll = false;
   }
 
   @override
   Widget build(BuildContext context) {
     print('current channel ' + widget.channel.name);
+    if (_needsScroll) {
+      print('scrolling');
+      // _scrollToEnd();
+      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToEnd());
+    }
     return WillPopScope(
         child: SafeArea(
             bottom: true,
@@ -144,13 +169,15 @@ class _ChatBoardState extends State<ChatBoard> {
                       child: Container(
                     color: Colors.black,
                     child: ListView.separated(
+                      controller: _scrollController,
                       separatorBuilder: (context, index) => Divider(
                         color: Colors.white,
                         height: 3,
                       ),
-                      itemCount: fakeMessages.length,
+                      itemCount: messages.length,
                       itemBuilder: (context, index) {
-                        return MessageLine(messages[index], fakeUsers[index]);
+                        return MessageLine(
+                            messages[index], fakeUsers[index], _addTagToInput);
                       },
                     ),
                   )),
@@ -197,6 +224,18 @@ class _ChatBoardState extends State<ChatBoard> {
       sw.close();
     }
     return Future.value(true);
+  }
+
+  void _addTagToInput(tag) {
+    this.setState(() {
+      if (_tagController.text == "")
+        _tagController.text += tag;
+      else {
+        if (!_tagController.text.contains(',$tag') &&
+            !_tagController.text.contains('$tag,') &&
+            _tagController.text != tag) _tagController.text += ',$tag';
+      }
+    });
   }
 
   void _updateTags(text) {

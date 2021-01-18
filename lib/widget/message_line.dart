@@ -5,7 +5,9 @@ import 'package:flutter_meitou/model/user.dart';
 class MessageLine extends StatefulWidget {
   final Message msg;
   final User user;
-  MessageLine(this.msg, this.user);
+  final Function(String) addTagCallBack;
+
+  MessageLine(this.msg, this.user, this.addTagCallBack);
   @override
   _MessageLineState createState() => _MessageLineState();
 }
@@ -16,8 +18,9 @@ class _MessageLineState extends State<MessageLine> {
     return Row(
         children: List<Widget>.generate(hashTags.length, (int index) {
       return GestureDetector(
-          onTap: () {
-            print('clicked on tag ' + hashTags[index].toString());
+          onDoubleTap: () {
+            print('clicked on tag ' + hashTags[index]);
+            widget.addTagCallBack(hashTags[index]);
           },
           child: Container(
               margin: EdgeInsets.only(right: 3),
@@ -121,7 +124,7 @@ class _MessageLineState extends State<MessageLine> {
                 topLeft: Radius.circular(0.0),
                 topRight: Radius.circular(0.0),
               ),
-              color: Color(0xff232f34),
+              color: Colors.green,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -138,7 +141,7 @@ class _MessageLineState extends State<MessageLine> {
                             topLeft: Radius.circular(0.0),
                             topRight: Radius.circular(0.0),
                           ),
-                          color: Color(0xff344955),
+                          color: Colors.lightGreen,
                         ),
                         child: Stack(
                           alignment: Alignment(0, 0),
@@ -151,7 +154,7 @@ class _MessageLineState extends State<MessageLine> {
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(50)),
                                     border: Border.all(
-                                        color: Color(0xff232f34), width: 10)),
+                                        color: Colors.green, width: 10)),
                                 child: Center(
                                   child: ClipOval(
                                     child: Image.network(
@@ -197,7 +200,7 @@ class _MessageLineState extends State<MessageLine> {
                         ))),
                 Container(
                   height: 36,
-                  color: Color(0xff4a6572),
+                  color: Colors.green,
                 )
               ],
             ),

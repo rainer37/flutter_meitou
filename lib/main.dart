@@ -12,6 +12,9 @@ class MyApp extends StatelessWidget {
       title: 'Welcome to MeiTou',
       home: RandomWords(),
       theme: ThemeData(primaryColor: Colors.lightGreen),
+      routes: {
+        '/chat': (context) => ChatPage(),
+      },
     );
   }
 }
@@ -22,7 +25,6 @@ class RandomWords extends StatefulWidget {
 }
 
 class _RandomWordsState extends State<RandomWords> {
-  final _suggestions = <WordPair>[];
   final _saved = Set<WordPair>();
   final _biggerFont = TextStyle(fontSize: 18.0);
   var _index = 0;
