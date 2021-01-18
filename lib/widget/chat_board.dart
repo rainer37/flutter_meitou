@@ -13,9 +13,9 @@ class ChatBoard extends StatefulWidget {
 }
 
 final userOne = User('u-0-0-1', 'UserOne', '',
-    'https://techcrunch.com/wp-content/uploads/2018/07/logo-2.png');
+    'https://techcrunch.com/wp-content/uploads/2018/07/logo-2.png', 99);
 final userTwo = User('u-0-0-2', 'ClientTwo', '',
-    'https://image.shutterstock.com/image-photo/image-260nw-551769190.jpg');
+    'https://image.shutterstock.com/image-photo/image-260nw-551769190.jpg', 50);
 
 var fakeUsers = [
   userOne,
@@ -65,12 +65,15 @@ var fakeMessages = [
 
 class _ChatBoardState extends State<ChatBoard> {
   var _controller = TextEditingController();
+  var _tagController = TextEditingController();
+
   SocketWarrior sw;
+  var messages = [];
 
   @override
   void initState() {
     super.initState();
-
+    messages = fakeMessages;
     sw = SocketWarrior(widget.channel.id);
     String serverEndpoint =
         'wss://4f6y995d0d.execute-api.us-west-2.amazonaws.com/dev';
@@ -85,7 +88,7 @@ class _ChatBoardState extends State<ChatBoard> {
             bottom: true,
             child: Scaffold(
               endDrawer: Container(
-                  width: 150,
+                  width: MediaQuery.of(context).size.width * 0.8,
                   child: Drawer(
                     // Add a ListView to the drawer. This ensures the user can scroll
                     // through the options in the drawer if there isn't enough vertical
@@ -95,9 +98,9 @@ class _ChatBoardState extends State<ChatBoard> {
                       padding: EdgeInsets.zero,
                       children: <Widget>[
                         Container(
-                            height: 120,
+                            height: 60,
                             child: DrawerHeader(
-                              child: Text('额外操作'),
+                              child: Text('其他骚操作'),
                               decoration: BoxDecoration(
                                 color: Colors.lightGreen,
                               ),
@@ -111,7 +114,7 @@ class _ChatBoardState extends State<ChatBoard> {
                           },
                         ),
                         ListTile(
-                          title: Text('所有标签'),
+                          title: Text('所有标签(##)'),
                           onTap: () {
                             // Update the state of the app.
                             print('所有标签 tapped');
@@ -135,13 +138,6 @@ class _ChatBoardState extends State<ChatBoard> {
                     ]),
                 // actions: [IconButton(icon: Icon(Icons.menu), onPressed: () => {})]
               ),
-              floatingActionButton: new FloatingActionButton(
-                child: new Icon(Icons.add),
-                onPressed: () {
-                  print('floating button clicked');
-                  //_focusNode.unfocus(); //3 - call this method here
-                },
-              ),
               body: Column(
                 children: [
                   Expanded(
@@ -154,21 +150,16 @@ class _ChatBoardState extends State<ChatBoard> {
                       ),
                       itemCount: fakeMessages.length,
                       itemBuilder: (context, index) {
-                        return MessageLine(
-                            fakeMessages[index], fakeUsers[index]);
+                        return MessageLine(messages[index], fakeUsers[index]);
                       },
                     ),
                   )),
-                  Container(
-                    height: 20,
-                    color: Colors.lightGreen,
-                  ),
                   Padding(
                     padding: EdgeInsets.only(left: 10, right: 10),
                     child: TextFormField(
                       controller: _controller,
                       decoration: InputDecoration(
-                          labelText: '想什么呢，跟我们说说吧',
+                          hintText: '想什么呢，跟我们说说吧',
                           suffixIcon: IconButton(
                               icon: Icon(Icons.delete_forever),
                               onPressed: () {
@@ -176,7 +167,24 @@ class _ChatBoardState extends State<ChatBoard> {
                               })),
                       onFieldSubmitted: _sendClicked,
                     ),
-                  )
+                  ),
+                  Padding(
+                      padding: EdgeInsets.only(left: 10, right: 10),
+                      child: Container(
+                        height: 40,
+                        child: TextFormField(
+                          controller: _tagController,
+                          decoration: InputDecoration(
+                              hintText: '加上标签吧，找起来更方便',
+                              suffixIcon: IconButton(
+                                  icon: Icon(Icons.delete_forever),
+                                  onPressed: () {
+                                    _tagController.clear();
+                                  })),
+                          onFieldSubmitted: _updateTags,
+                          style: TextStyle(fontSize: 10),
+                        ),
+                      ))
                 ],
               ),
             )),
@@ -191,10 +199,38 @@ class _ChatBoardState extends State<ChatBoard> {
     return Future.value(true);
   }
 
+  void _updateTags(text) {
+    if (!RegExp(r"^[a-zA-Z]+(,[a-zA-Z]+)*$").hasMatch(text)) {
+      // show the dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("标签格式不合格"),
+            content: Text("请输入以逗号隔开的标签序列。例如：TLSA,AMZ,GOOG"),
+            actions: [
+              FlatButton(
+                child: Text("懂了"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _tagController.clear();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      print('tags entered: $text');
+    }
+  }
+
   void _sendClicked(text) {
+    if (text == "" || _tagController.text == "") return;
     print('entered [$text] in channel ${widget.channel.name}');
     String msg =
-        Message(widget.channel.id, 'rain-0-0-1', text, 't1,t2', '').toJSON();
+        Message(widget.channel.id, 'rain-0-0-1', text, _tagController.text, '')
+            .toJSON();
     sw.sendMessage(msg);
     _controller.clear();
   }
