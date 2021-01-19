@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_meitou/model/config.dart';
 import 'package:flutter_meitou/model/message.dart';
 import 'package:flutter_meitou/model/user.dart';
 
 class MessageLine extends StatefulWidget {
   final Message msg;
-  final User user;
   final Function(String) addTagCallBack;
 
-  MessageLine(this.msg, this.user, this.addTagCallBack);
+  MessageLine(this.msg, this.addTagCallBack);
   @override
   _MessageLineState createState() => _MessageLineState();
 }
 
 class _MessageLineState extends State<MessageLine> {
+  User sender;
+
   Row _buildHashTagRow() {
     List<String> hashTags = widget.msg.hashtags.split(',');
     return Row(
@@ -23,7 +25,7 @@ class _MessageLineState extends State<MessageLine> {
             widget.addTagCallBack(hashTags[index]);
           },
           child: Container(
-              margin: EdgeInsets.only(right: 3),
+              margin: EdgeInsets.only(right: 3, top: 1),
               padding: EdgeInsets.only(top: 2, left: 5, right: 5, bottom: 2),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
@@ -38,6 +40,9 @@ class _MessageLineState extends State<MessageLine> {
 
   @override
   Widget build(BuildContext context) {
+    if (sender == null) {
+      sender = MeitouConfig.getConfig('USER#${widget.msg.senderId}');
+    }
     return Container(
       padding: EdgeInsets.only(bottom: 10, top: 10, left: 10, right: 20),
       child: Row(
@@ -46,11 +51,11 @@ class _MessageLineState extends State<MessageLine> {
           Expanded(
               child: GestureDetector(
                   onTap: () {
-                    print('${widget.user.name} avatar clicked');
+                    print('${sender.name} avatar clicked');
                     showMenu();
                   },
                   child: CircleAvatar(
-                    backgroundImage: NetworkImage(widget.user.avatarUrl),
+                    backgroundImage: NetworkImage(sender.avatarUrl),
                     backgroundColor: Colors.black,
                   )),
               flex: 1),
@@ -70,7 +75,7 @@ class _MessageLineState extends State<MessageLine> {
                               Padding(
                                   padding: EdgeInsets.only(right: 5),
                                   child: Text(
-                                    widget.user.name,
+                                    sender.name,
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white,
@@ -158,7 +163,7 @@ class _MessageLineState extends State<MessageLine> {
                                 child: Center(
                                   child: ClipOval(
                                     child: Image.network(
-                                      widget.user.avatarUrl,
+                                      sender.avatarUrl,
                                       fit: BoxFit.cover,
                                       height: 56,
                                       width: 56,
@@ -173,7 +178,7 @@ class _MessageLineState extends State<MessageLine> {
                                 children: <Widget>[
                                   ListTile(
                                     title: Text(
-                                      widget.user.name,
+                                      sender.name,
                                       style: TextStyle(color: Colors.white),
                                     ),
                                     leading: Icon(
@@ -184,7 +189,7 @@ class _MessageLineState extends State<MessageLine> {
                                   ),
                                   ListTile(
                                     title: Text(
-                                      '${widget.user.coins}',
+                                      '${sender.coins}',
                                       style: TextStyle(color: Colors.white),
                                     ),
                                     leading: Icon(

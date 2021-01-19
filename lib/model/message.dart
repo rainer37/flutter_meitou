@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-class Message {
+class Message extends Comparable {
   String channelId, senderId, content, hashtags, lastUpdatedAt;
   Message(this.channelId, this.senderId, this.content, this.hashtags,
       this.lastUpdatedAt);
@@ -23,6 +23,11 @@ class Message {
   }
 
   @override
+  String toString() {
+    return toJSON();
+  }
+
+  @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is Message &&
@@ -40,4 +45,12 @@ class Message {
       content.hashCode ^
       hashtags.hashCode ^
       lastUpdatedAt.hashCode;
+
+  @override
+  int compareTo(other) {
+    Message otherMsg = (other as Message);
+    if (lastUpdatedAt == otherMsg.lastUpdatedAt &&
+        senderId == otherMsg.senderId) return 0;
+    return lastUpdatedAt.compareTo(otherMsg.lastUpdatedAt);
+  }
 }

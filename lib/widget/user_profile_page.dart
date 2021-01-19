@@ -1,11 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_meitou/model/config.dart';
-import 'package:flutter_meitou/widget/transaction.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
-
-// Map<String, dynamic> userConfig = {};
 
 class UserProfile extends StatefulWidget {
   @override
@@ -21,7 +18,7 @@ class _UserProfileState extends State<UserProfile> {
   void initState() {
     super.initState();
     setState(() {
-      _userName = 'Rain';
+      _userName = 'Loading';
       _coin = 0;
     });
     _fetchUserInfo();
@@ -44,7 +41,8 @@ class _UserProfileState extends State<UserProfile> {
       var jsonResponse = convert.jsonDecode(response.body);
       // var itemCount = jsonResponse['totalItems'];
       // print('Number of books about http: $jsonResponse.');
-      // print("${jsonResponse['user_name']['S']}");
+      print("${jsonResponse}");
+      MeitouConfig.setConfig('user_id', jsonResponse['userId']['S']);
       MeitouConfig.setConfig('user_name', jsonResponse['user_name']['S']);
       MeitouConfig.setConfig('coins', int.parse(jsonResponse['coins']['N']));
 
@@ -55,24 +53,6 @@ class _UserProfileState extends State<UserProfile> {
     } else {
       print('Request failed with status: ${response.statusCode}.');
     }
-  }
-
-  Widget _buildTransRow(index) {
-    return Transaction(index: index);
-  }
-
-  Widget _buildTransList() {
-    return Container(
-        margin: EdgeInsets.only(top: 10),
-        child: SizedBox(
-            height: 200,
-            child: ListView.builder(
-              itemCount: items.length,
-              itemExtent: 40,
-              itemBuilder: (context, index) {
-                return _buildTransRow(index);
-              },
-            )));
   }
 
   Widget _buildUserInfo() {
@@ -130,7 +110,6 @@ class _UserProfileState extends State<UserProfile> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildUserInfo(),
-        _buildTransList(),
         Padding(
             padding: EdgeInsets.only(top: 10, left: 10),
             child: Text('我的订阅频道们')),

@@ -1,13 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
+import 'package:flutter_meitou/model/config.dart';
 import 'package:flutter_meitou/widget/chat_page.dart';
 import 'package:flutter_meitou/widget/user_profile_page.dart';
+
+import 'model/user.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    MeitouConfig.setConfig('wsEndpointUrl',
+        'wss://4f6y995d0d.execute-api.us-west-2.amazonaws.com/dev');
+    MeitouConfig.setConfig('restEndpointUrl',
+        'https://ben62z58pk.execute-api.us-west-2.amazonaws.com');
+    MeitouConfig.setConfig(
+        'USER#u-0-0-1',
+        User(
+            'u-0-0-1',
+            'UserOne',
+            'userone@gmail.com',
+            'https://techcrunch.com/wp-content/uploads/2018/07/logo-2.png',
+            99));
+    MeitouConfig.setConfig(
+        'USER#u-0-0-2',
+        User(
+            'u-0-0-2',
+            'ClientTwo',
+            'clienttwo@hotmail.com',
+            'https://image.shutterstock.com/image-photo/image-260nw-551769190.jpg',
+            50));
+    MeitouConfig.setConfig(
+        'USER#198405c8-ca46-4818-ab51-5b612149d2d1',
+        User(
+            '198405c8-ca46-4818-ab51-5b612149d2d1',
+            'rainergu37',
+            'rainergu37@hotmail.com',
+            'https://cdn.dribbble.com/users/3641854/screenshots/8201011/shot-cropped-1573712443265.png?compress=1&resize=400x300',
+            50));
     return MaterialApp(
       title: 'Welcome to MeiTou',
       home: RandomWords(),

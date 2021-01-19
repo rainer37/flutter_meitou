@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_meitou/model/MessageWarlock.dart';
 import 'package:flutter_meitou/model/channel.dart';
+import 'package:flutter_meitou/model/config.dart';
 import 'package:flutter_meitou/model/message.dart';
 import 'package:flutter_meitou/model/socket_warrior.dart';
-import 'package:flutter_meitou/model/user.dart';
 import 'package:flutter_meitou/widget/message_line.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
 
 class ChatBoard extends StatefulWidget {
   final Channel channel;
@@ -12,58 +15,39 @@ class ChatBoard extends StatefulWidget {
   _ChatBoardState createState() => _ChatBoardState();
 }
 
-final userOne = User('u-0-0-1', 'UserOne', '',
-    'https://techcrunch.com/wp-content/uploads/2018/07/logo-2.png', 99);
-final userTwo = User('u-0-0-2', 'ClientTwo', '',
-    'https://image.shutterstock.com/image-photo/image-260nw-551769190.jpg', 50);
-
-var fakeUsers = [
-  userOne,
-  userTwo,
-  userOne,
-  userTwo,
-  userOne,
-  userTwo,
-  userOne,
-  userTwo,
-  userOne,
-  userTwo,
-  userOne,
-  userTwo,
-  userTwo,
-  userTwo,
-  userTwo,
-];
-
-var fakeMessages = [
-  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserOne', 'hello A',
+List<Message> fakeMessages = [
+  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'u-0-0-1', 'hello A',
       'tag1,wz', '1610930682209'),
-  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserTwo', 'hello echo A',
+  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'u-0-0-2', 'hello echo A',
       'AZ,wz', '1610930682210'),
-  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserOne', 'hello B',
-      'tag88,w222', '1610930682212'),
+  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'u-0-0-1', 'hello B',
+      'tag88,w222,SQ', '1610930682212'),
   Message(
       '0e0cdd58-c7e1-4212-b75c-f27f9c430290',
-      'UserTwo',
+      'u-0-0-2',
       'hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B',
       'tag1,AZ',
       '1610930682209'),
-  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserOne', 'hello C',
-      'tag1,wz', '1610930682219'),
-  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserTwo', 'hello echo C',
-      'tag88,wz', '1610930682229'),
-  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserOne', 'hello D',
-      'tag1,wz', '1610930682239'),
-  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserTwo', 'hello echo D',
+  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'u-0-0-1', 'hello C',
       'tag1,wz', '1610930682249'),
-  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserOne', 'hello E',
-      'tag1,wz', '1610930682259'),
-  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserTwo', 'hello echo E',
+  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'u-0-0-2', 'hello echo C',
+      'tag88,wz', '1610930682229'),
+  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'u-0-0-1', 'hello D',
+      'tag1,wz,BBB', '1610930682239'),
+  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'u-0-0-2', 'hello echo D',
+      'tag1,wz', '1610930682589'),
+  Message(
+      '0e0cdd58-c7e1-4212-b75c-f27f9c430290',
+      'u-0-0-1',
+      'https://img.icons8.com/ios/452/flutter.png',
+      'tag1,wz,IMG',
+      '1610930682259'),
+  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'u-0-0-2', 'hello echo E',
       'tag0,AZ', '1610930682269'),
-  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserOne', 'hello F', 'tag0',
+  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'u-0-0-1', 'hello F', 'tag0',
       '1610930682279'),
-  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'UserTwo', 'hello echo F',
-      'tag1,wz', '1610930682299'),
+  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'u-0-0-2', 'hello echo F',
+      'tag1,wz', '1610930682230'),
 ];
 
 class _ChatBoardState extends State<ChatBoard> {
@@ -78,18 +62,54 @@ class _ChatBoardState extends State<ChatBoard> {
   @override
   void initState() {
     super.initState();
-    messages = fakeMessages;
+    // messages = fakeMessages;
+    // for (Message m in messages) {
+    //   MessageWarlock.summon().addMessageToChannel(widget.channel.id, m);
+    // }
+    // MessageWarlock.summon().spellMessagesInChannel(widget.channel.id);
+    // messages.sort((a, b) => a.lastUpdatedAt.compareTo(b.lastUpdatedAt));
+    // print(messages);
+    _fetchChatHistory();
     sw = SocketWarrior(widget.channel.id);
-    String serverEndpoint =
-        'wss://4f6y995d0d.execute-api.us-west-2.amazonaws.com/dev';
+    String serverEndpoint = '${MeitouConfig.getConfig('wsEndpointUrl')}';
     sw.open(serverEndpoint);
-    sw.openConn.stream.listen((event) {
-      print(event);
-      Message msg = Message.fromJSON(event);
-      this.setState(() {
-        messages.add(msg);
-        _needsScroll = true;
+    sw.openConn.stream.listen(_onMessageCome);
+  }
+
+  void _fetchChatHistory() async {
+    String lastMessageSeen =
+        MessageWarlock.summon().lastSeenInChannel(widget.channel.id);
+    var url =
+        "https://ben62z58pk.execute-api.us-west-2.amazonaws.com/chats/${widget.channel.id}/$lastMessageSeen";
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      var jsonResponse = convert.jsonDecode(response.body);
+      // print(jsonResponse);
+
+      // var itemCount = jsonResponse['totalItems'];
+      // print('Number of books about http: $jsonResponse.');
+      // print("${jsonResponse}");
+      // messages.clear();
+      setState(() {
+        for (var msg in jsonResponse) {
+          MessageWarlock.summon().addMessageToChannel(
+              widget.channel.id,
+              Message(msg['channel_id'], msg['sender_id'], msg['content'],
+                  msg['hashtags'], msg['last_updated_at']));
+        }
+        // MeitouConfig.setConfig('channelFetched', true);
       });
+    } else {
+      print('Request failed with status: ${response.statusCode}.');
+    }
+  }
+
+  _onMessageCome(event) {
+    print(event);
+    Message msg = Message.fromJSON(event);
+    this.setState(() {
+      MessageWarlock.summon().addMessageToChannel(widget.channel.id, msg);
+      _needsScroll = true;
     });
   }
 
@@ -172,12 +192,15 @@ class _ChatBoardState extends State<ChatBoard> {
                       controller: _scrollController,
                       separatorBuilder: (context, index) => Divider(
                         color: Colors.white,
-                        height: 3,
+                        height: 1,
                       ),
-                      itemCount: messages.length,
+                      itemCount: MessageWarlock.summon()
+                          .numMessagesInChannel(widget.channel.id),
                       itemBuilder: (context, index) {
                         return MessageLine(
-                            messages[index], fakeUsers[index], _addTagToInput);
+                            MessageWarlock.summon().castMessagesInChannel(
+                                widget.channel.id)[index],
+                            _addTagToInput);
                       },
                     ),
                   )),
@@ -267,8 +290,13 @@ class _ChatBoardState extends State<ChatBoard> {
   void _sendClicked(text) {
     if (text == "" || _tagController.text == "") return;
     print('entered [$text] in channel ${widget.channel.name}');
+    String curUserId = MeitouConfig.getConfig('user_id');
+    if (curUserId == null) {
+      print('why not logged in');
+      return;
+    }
     String msg =
-        Message(widget.channel.id, 'rain-0-0-1', text, _tagController.text, '')
+        Message(widget.channel.id, curUserId, text, _tagController.text, '')
             .toJSON();
     sw.sendMessage(msg);
     _controller.clear();

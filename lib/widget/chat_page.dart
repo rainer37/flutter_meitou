@@ -27,7 +27,7 @@ class _ChatPageState extends State<ChatPage> {
   void _fetchChannels() async {
     if (MeitouConfig.containsConfig('channelFetched')) return;
     hotChannels.clear();
-    var url = "https://ben62z58pk.execute-api.us-west-2.amazonaws.com/channels";
+    var url = "${MeitouConfig.getConfig('restEndpointUrl')}/channels";
     var response = await http.get(url);
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
