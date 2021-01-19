@@ -11,7 +11,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Welcome to MeiTou',
       home: RandomWords(),
-      theme: ThemeData(primaryColor: Colors.lightGreen),
+      theme: ThemeData(
+        primaryColor: Colors.lightGreen,
+        scaffoldBackgroundColor: Colors.white,
+      ),
       routes: {
         '/chat': (context) => ChatPage(),
       },

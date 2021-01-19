@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_meitou/model/config.dart';
 import 'package:flutter_meitou/widget/transaction.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
-Map<String, dynamic> userConfig = {};
+// Map<String, dynamic> userConfig = {};
 
 class UserProfile extends StatefulWidget {
   @override
@@ -27,11 +28,11 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   void _fetchUserInfo() async {
-    if (userConfig.containsKey('user_name') &&
-        userConfig.containsKey('coins')) {
+    if (MeitouConfig.containsConfig('user_name') &&
+        MeitouConfig.containsConfig('coins')) {
       setState(() {
-        _userName = userConfig['user_name'];
-        _coin = userConfig['coins'];
+        _userName = MeitouConfig.getConfig('user_name');
+        _coin = MeitouConfig.getConfig('coins');
       });
       return;
     }
@@ -44,8 +45,9 @@ class _UserProfileState extends State<UserProfile> {
       // var itemCount = jsonResponse['totalItems'];
       // print('Number of books about http: $jsonResponse.');
       // print("${jsonResponse['user_name']['S']}");
-      userConfig['user_name'] = jsonResponse['user_name']['S'];
-      userConfig['coins'] = int.parse(jsonResponse['coins']['N']);
+      MeitouConfig.setConfig('user_name', jsonResponse['user_name']['S']);
+      MeitouConfig.setConfig('coins', int.parse(jsonResponse['coins']['N']));
+
       setState(() {
         _userName = jsonResponse['user_name']['S'];
         _coin = int.parse(jsonResponse['coins']['N']);
@@ -61,7 +63,6 @@ class _UserProfileState extends State<UserProfile> {
 
   Widget _buildTransList() {
     return Container(
-        color: Colors.white,
         margin: EdgeInsets.only(top: 10),
         child: SizedBox(
             height: 200,
@@ -82,7 +83,6 @@ class _UserProfileState extends State<UserProfile> {
             Container(
                 width: 150,
                 height: 150,
-                color: Colors.white,
                 child: Icon(
                   Icons.verified_user,
                   color: Colors.blue,
@@ -92,7 +92,6 @@ class _UserProfileState extends State<UserProfile> {
               width: 200,
               height: 150,
               margin: EdgeInsets.only(left: 20),
-              color: Colors.white,
               child: Padding(
                   padding: EdgeInsets.only(top: 20),
                   child: Column(
@@ -127,23 +126,21 @@ class _UserProfileState extends State<UserProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
-            color: Colors.white,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildUserInfo(),
-                _buildTransList(),
-                Padding(
-                    padding: EdgeInsets.only(top: 10, left: 10),
-                    child: Text('我的订阅频道们')),
-                _buildSubscriptionList(),
-              ],
-            )));
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildUserInfo(),
+        _buildTransList(),
+        Padding(
+            padding: EdgeInsets.only(top: 10, left: 10),
+            child: Text('我的订阅频道们')),
+        _buildSubscriptionList(),
+      ],
+    )));
   }
 
   Widget _buildSubscriptionList() {
     return Container(
-        color: Colors.white,
         margin: EdgeInsets.only(top: 10),
         child: SizedBox(
             height: 150,
