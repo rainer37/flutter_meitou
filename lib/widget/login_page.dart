@@ -21,13 +21,14 @@ class _LoginPageState extends State<LoginPage> {
         username: _emailController.text,
         password: _passwordController.text,
       );
+      print('[${_emailController.text}][${_passwordController.text}]');
       print('has user logged in ? ${res.isSignedIn}');
       // CognitoAuthSession sess = await Amplify.Auth.fetchAuthSession(
       //     options: CognitoSessionOptions(getAWSCredentials: true));
       // print('has user logged in ? ${sess.isSignedIn}');
       // print(sess.userPoolTokens.idToken);
     } on AuthError catch (e) {
-      print(e.exceptionList);
+      print(e.toString());
     }
   }
 
