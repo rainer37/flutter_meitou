@@ -200,6 +200,7 @@ class _RandomWordsState extends State<RandomWords> {
                 .copyWith(caption: new TextStyle(color: Colors.white)),
           ),
           child: new BottomNavigationBar(
+            elevation: 0,
             onTap: (index) {
               setState(() {
                 _index = index;
