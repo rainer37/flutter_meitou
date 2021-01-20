@@ -27,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
       // print('has user logged in ? ${sess.isSignedIn}');
       // print(sess.userPoolTokens.idToken);
     } on AuthError catch (e) {
-      print(e);
+      print(e.exceptionList);
     }
   }
 
@@ -38,26 +38,7 @@ class _LoginPageState extends State<LoginPage> {
       print('amplify configured');
       return;
     }
-    // try {
-    //   Map<String, dynamic> userAttributes = {
-    //     "email": 'rainer.1993@hotmail.com',
-    //     "phone_number": '+12367776456',
-    //     // additional attributes as needed
-    //   };
-    //   SignUpResult res = await Amplify.Auth.signUp(
-    //       username: "rainer.1993@hotmail.com",
-    //       password: "password",
-    //       options: CognitoSignUpOptions(userAttributes: userAttributes));
-    //   print('is sign up complete ? ${res.isSignUpComplete}');
-    // } on AuthError catch (e) {
-    //   print(e);
-    // }
-    // try {
-    //   SignUpResult res = await Amplify.Auth.confirmSignUp(
-    //       username: "rainer.1993@hotmail.com", confirmationCode: "467973");
-    // } on AuthError catch (e) {
-    //   print(e);
-    // }
+
     try {
       Amplify amplifyInstance = Amplify();
       AmplifyAuthCognito authPlugin = AmplifyAuthCognito();
@@ -70,8 +51,28 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         MeitouConfig.setConfig('amplifyConfigured', true);
       });
-    } catch (e) {
-      print(e);
+      // try {
+      //   Map<String, dynamic> userAttributes = {
+      //     "email": 'rainer.1993@hotmail.com',
+      //     "phone_number": '+12367776456',
+      //     // additional attributes as needed
+      //   };
+      //   SignUpResult res = await Amplify.Auth.signUp(
+      //       username: "rainer.1993@hotmail.com",
+      //       password: "Abcd1234!!!",
+      //       options: CognitoSignUpOptions(userAttributes: userAttributes));
+      //   print('is sign up complete ? ${res.isSignUpComplete}');
+      // } on AuthError catch (e) {
+      //   print(e);
+      // }
+      // try {
+      //   SignUpResult res = await Amplify.Auth.confirmSignUp(
+      //       username: "rainer.1993@hotmail.com", confirmationCode: "838881");
+      // } on AuthError catch (e) {
+      //   print(e);
+      // }
+    } on AuthError catch (e) {
+      print(e.exceptionList);
     }
   }
 
