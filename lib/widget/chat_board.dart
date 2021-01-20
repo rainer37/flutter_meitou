@@ -401,6 +401,7 @@ class _ChatBoardState extends State<ChatBoard> {
         .toJSON();
     sw.sendMessage(msg);
     _controller.clear();
+    FocusScope.of(context).requestFocus(new FocusNode());
   }
 
   Widget _buildChip(String text, Color color) {

@@ -65,6 +65,50 @@ class _MessageLineState extends State<MessageLine> {
               child: GestureDetector(
                   onLongPress: () {
                     print('long pressing message');
+                    showModalBottomSheet(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Container(
+                            height: MediaQuery.of(context).size.height * 0.3,
+                            color: Colors.lightGreen,
+                            child: Column(
+                              children: [
+                                Expanded(
+                                    flex: 1,
+                                    child: FlatButton(
+                                        child: Text(
+                                      '打赏',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
+                                          color: Color(0xFFf4ebc1)),
+                                    ))),
+                                Divider(),
+                                Expanded(
+                                    flex: 1,
+                                    child: FlatButton(
+                                        child: Text(
+                                      '我看行!!!',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
+                                          color: Color(0xFFf4ebc1)),
+                                    ))),
+                                Divider(),
+                                Expanded(
+                                    flex: 1,
+                                    child: FlatButton(
+                                        child: Text(
+                                      '不懂???',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
+                                          color: Color(0xFFf4ebc1)),
+                                    )))
+                              ],
+                            ),
+                          );
+                        });
                   },
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
