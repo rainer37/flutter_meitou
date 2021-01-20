@@ -71,16 +71,26 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
+            color: Color(0xFFf4ebc1),
             child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-            padding: EdgeInsets.only(top: 10, left: 10), child: Text('热门频道')),
-        _buildChannelList(hotChannels),
-        Padding(
-            padding: EdgeInsets.only(top: 10, left: 10), child: Text('我的频道')),
-        _buildChannelList(myChannels),
-      ],
-    )));
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                    padding: EdgeInsets.only(top: 10, left: 10),
+                    child: Text('热门频道')),
+                _buildChannelList(hotChannels),
+                Divider(
+                  color: Colors.black,
+                  height: 1,
+                  thickness: 0.5,
+                  indent: 10,
+                  endIndent: 10,
+                ),
+                Padding(
+                    padding: EdgeInsets.only(top: 10, left: 10),
+                    child: Text('我的频道')),
+                _buildChannelList(myChannels),
+              ],
+            )));
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter_meitou/model/config.dart';
 import 'package:flutter_meitou/widget/chat_page.dart';
+import 'package:flutter_meitou/widget/login_page.dart';
 import 'package:flutter_meitou/widget/user_profile_page.dart';
 
 import 'model/user.dart';
@@ -41,7 +42,8 @@ class MyApp extends StatelessWidget {
             50));
     return MaterialApp(
       title: 'Welcome to MeiTou',
-      home: RandomWords(),
+      home: Container(
+          color: Colors.lightGreen, child: SafeArea(child: RandomWords())),
       theme: ThemeData(
         primaryColor: Colors.lightGreen,
         scaffoldBackgroundColor: Colors.white,
@@ -79,40 +81,42 @@ class _RandomWordsState extends State<RandomWords> {
   @override
   void initState() {
     super.initState();
-    children[0] = DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text("美投平台"),
-          bottom: TabBar(
-            tabs: [
-              Tab(
-                  icon: Icon(Icons.bar_chart),
-                  child: Container(
-                    child: Text('财经头条'),
-                  )),
-              Tab(
-                  icon: Icon(Icons.mail_outline),
-                  child: Container(
-                    child: Text('机密信息'),
-                  )),
-              Tab(
-                  icon: Icon(Icons.cloud_queue_sharp),
-                  child: Container(
-                    child: Text('云计算'),
-                  )),
-            ],
-          ),
-        ),
-        body: TabBarView(
-          children: [
-            Icon(Icons.bar_chart, size: 200),
-            Icon(Icons.mail_outline, size: 200),
-            Icon(Icons.cloud_queue_sharp, size: 200),
-          ],
-        ),
-      ),
-    );
+    // _configureAmplify();
+    children[0] = LoginPage();
+    // children[0] = DefaultTabController(
+    //   length: 3,
+    //   child: Scaffold(
+    //     appBar: AppBar(
+    //       title: Text("美投平台"),
+    //       bottom: TabBar(
+    //         tabs: [
+    //           Tab(
+    //               icon: Icon(Icons.bar_chart),
+    //               child: Container(
+    //                 child: Text('财经头条'),
+    //               )),
+    //           Tab(
+    //               icon: Icon(Icons.mail_outline),
+    //               child: Container(
+    //                 child: Text('机密信息'),
+    //               )),
+    //           Tab(
+    //               icon: Icon(Icons.cloud_queue_sharp),
+    //               child: Container(
+    //                 child: Text('云计算'),
+    //               )),
+    //         ],
+    //       ),
+    //     ),
+    //     body: TabBarView(
+    //       children: [
+    //         Icon(Icons.bar_chart, size: 200),
+    //         Icon(Icons.mail_outline, size: 200),
+    //         Icon(Icons.cloud_queue_sharp, size: 200),
+    //       ],
+    //     ),
+    //   ),
+    // );
 
     final mainAppBar = AppBar(
       title: Text('美投'),

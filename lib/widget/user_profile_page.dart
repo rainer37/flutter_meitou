@@ -41,7 +41,7 @@ class _UserProfileState extends State<UserProfile> {
       var jsonResponse = convert.jsonDecode(response.body);
       // var itemCount = jsonResponse['totalItems'];
       // print('Number of books about http: $jsonResponse.');
-      print("${jsonResponse}");
+      // print("${jsonResponse}");
       MeitouConfig.setConfig('user_id', jsonResponse['userId']['S']);
       MeitouConfig.setConfig('user_name', jsonResponse['user_name']['S']);
       MeitouConfig.setConfig('coins', int.parse(jsonResponse['coins']['N']));
@@ -106,16 +106,17 @@ class _UserProfileState extends State<UserProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
+            color: Color(0xFFf4ebc1),
             child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildUserInfo(),
-        Padding(
-            padding: EdgeInsets.only(top: 10, left: 10),
-            child: Text('我的订阅频道们')),
-        _buildSubscriptionList(),
-      ],
-    )));
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildUserInfo(),
+                Padding(
+                    padding: EdgeInsets.only(top: 10, left: 10),
+                    child: Text('我的订阅频道们')),
+                _buildSubscriptionList(),
+              ],
+            )));
   }
 
   Widget _buildSubscriptionList() {

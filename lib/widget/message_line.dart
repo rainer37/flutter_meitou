@@ -52,11 +52,13 @@ class _MessageLineState extends State<MessageLine> {
               child: GestureDetector(
                   onTap: () {
                     print('${sender.name} avatar clicked');
+                    FocusScope.of(context).requestFocus(new FocusNode());
                     showMenu();
                   },
                   child: CircleAvatar(
                     backgroundImage: NetworkImage(sender.avatarUrl),
                     backgroundColor: Colors.black,
+                    radius: 30,
                   )),
               flex: 1),
           Expanded(
@@ -78,15 +80,13 @@ class _MessageLineState extends State<MessageLine> {
                                     sender.name,
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.white,
                                         fontSize: 10),
                                   )),
                               Text(
                                 new DateTime.fromMillisecondsSinceEpoch(
                                         int.parse(widget.msg.lastUpdatedAt))
                                     .toString(),
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 10),
+                                style: TextStyle(fontSize: 10),
                               ),
                             ],
                           ),
@@ -112,7 +112,7 @@ class _MessageLineState extends State<MessageLine> {
                             padding: EdgeInsets.only(top: 3, left: 15),
                             child: _buildHashTagRow())
                       ])),
-              flex: 8),
+              flex: 5),
           Expanded(flex: 1, child: Container())
         ],
       ),

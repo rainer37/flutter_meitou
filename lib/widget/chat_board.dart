@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_meitou/model/MessageWarlock.dart';
+import 'package:flutter_meitou/model/message_warlock.dart';
 import 'package:flutter_meitou/model/channel.dart';
 import 'package:flutter_meitou/model/config.dart';
 import 'package:flutter_meitou/model/message.dart';
@@ -129,47 +129,84 @@ class _ChatBoardState extends State<ChatBoard> {
       WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToEnd());
     }
     return WillPopScope(
-        child: SafeArea(
-            bottom: true,
-            child: Scaffold(
-              endDrawer: Container(
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  child: Drawer(
-                    // Add a ListView to the drawer. This ensures the user can scroll
-                    // through the options in the drawer if there isn't enough vertical
-                    // space to fit everything.
+        child: Scaffold(
+            endDrawer: Container(
+                width: MediaQuery.of(context).size.width * 0.8,
+                child: Drawer(
+                  // Add a ListView to the drawer. This ensures the user can scroll
+                  // through the options in the drawer if there isn't enough vertical
+                  // space to fit everything.
+                  child: Container(
+                    color: Color(0xFFf4ebc1),
                     child: ListView(
                       // Important: Remove any padding from the ListView.
                       padding: EdgeInsets.zero,
                       children: <Widget>[
-                        Container(
-                            height: 60,
-                            child: DrawerHeader(
-                              child: Text('其他骚操作'),
-                              decoration: BoxDecoration(
-                                color: Colors.lightGreen,
-                              ),
-                            )),
+                        DrawerHeader(
+                          child: Text('其他骚操作'),
+                          decoration: BoxDecoration(color: Colors.lightGreen),
+                        ),
                         ListTile(
-                          title: Text('所有问题'),
+                          title: Text('无任何神奇问题'),
                           onTap: () {
                             // Update the state of the app.
                             // ...
                             print('所有问题 tapped');
                           },
                         ),
+                        Divider(),
                         ListTile(
-                          title: Text('所有标签(##)'),
+                          title: Text('所有标签(#######)'),
                           onTap: () {
                             // Update the state of the app.
                             print('所有标签 tapped');
                           },
                         ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 2.0),
+                          child: new Column(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              new Wrap(
+                                spacing: 2.0,
+                                direction: Axis.horizontal,
+                                children: <Widget>[
+                                  new Chip(
+                                    label: new Text('AWS'),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                  new Chip(
+                                    label: new Text('AZ'),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                  new Chip(
+                                    label: new Text('TSLA'),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                  new ActionChip(
+                                    elevation: 2,
+                                    onPressed: () {
+                                      print('cih');
+                                    },
+                                    label: new Text('BIO'),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                  new Chip(
+                                    label: new Text('FFY'),
+                                    backgroundColor: Colors.green,
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
                       ],
                     ),
-                  )),
-              appBar: AppBar(
-                title: Column(
+                  ),
+                )),
+            appBar: AppBar(
+              title: GestureDetector(
+                child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(widget.channel.name),
@@ -181,60 +218,77 @@ class _ChatBoardState extends State<ChatBoard> {
                         ),
                       )
                     ]),
-                // actions: [IconButton(icon: Icon(Icons.menu), onPressed: () => {})]
+                onTap: () {
+                  print('channel info tapped');
+                },
               ),
-              body: Column(
+              // actions: [IconButton(icon: Icon(Icons.menu), onPressed: () => {})]
+            ),
+            body: Container(
+              color: Colors.lightGreen,
+              child: Column(
                 children: [
                   Expanded(
-                      child: Container(
-                    color: Colors.black,
-                    child: ListView.separated(
-                      controller: _scrollController,
-                      separatorBuilder: (context, index) => Divider(
-                        color: Colors.white,
-                        height: 1,
-                      ),
-                      itemCount: MessageWarlock.summon()
-                          .numMessagesInChannel(widget.channel.id),
-                      itemBuilder: (context, index) {
-                        return MessageLine(
-                            MessageWarlock.summon().castMessagesInChannel(
-                                widget.channel.id)[index],
-                            _addTagToInput);
-                      },
-                    ),
-                  )),
-                  Padding(
-                    padding: EdgeInsets.only(left: 10, right: 10),
-                    child: TextFormField(
-                      controller: _controller,
-                      decoration: InputDecoration(
-                          hintText: '想什么呢，跟我们说说吧',
-                          suffixIcon: IconButton(
-                              icon: Icon(Icons.delete_forever),
-                              onPressed: () {
-                                _controller.clear();
-                              })),
-                      onFieldSubmitted: _sendClicked,
-                    ),
-                  ),
-                  Padding(
-                      padding: EdgeInsets.only(left: 10, right: 10),
-                      child: Container(
-                        height: 40,
+                      child: GestureDetector(
+                          onTap: () {
+                            FocusScope.of(context)
+                                .requestFocus(new FocusNode());
+                          },
+                          child: Container(
+                            color: Color(0xFFf4ebc1),
+                            child: ListView.separated(
+                              controller: _scrollController,
+                              separatorBuilder: (context, index) => Divider(
+                                color: Colors.lightGreen,
+                                height: 1,
+                              ),
+                              itemCount: MessageWarlock.summon()
+                                  .numMessagesInChannel(widget.channel.id),
+                              itemBuilder: (context, index) {
+                                return MessageLine(
+                                    MessageWarlock.summon()
+                                        .castMessagesInChannel(
+                                            widget.channel.id)[index],
+                                    _addTagToInput);
+                              },
+                            ),
+                          ))),
+                  Container(
+                      color: Colors.lightGreen,
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 10, right: 10),
                         child: TextFormField(
-                          controller: _tagController,
+                          controller: _controller,
+                          style: TextStyle(backgroundColor: Colors.lightGreen),
                           decoration: InputDecoration(
-                              hintText: '加上标签吧，找起来更方便',
+                              hintText: '想什么呢，跟我们说说吧',
                               suffixIcon: IconButton(
                                   icon: Icon(Icons.delete_forever),
                                   onPressed: () {
-                                    _tagController.clear();
+                                    _controller.clear();
                                   })),
-                          onFieldSubmitted: _updateTags,
-                          style: TextStyle(fontSize: 10),
+                          onFieldSubmitted: _sendClicked,
                         ),
-                      ))
+                      )),
+                  Container(
+                      color: Colors.lightGreen,
+                      child: Padding(
+                          padding: EdgeInsets.only(left: 10, right: 10),
+                          child: Container(
+                            height: 40,
+                            child: TextFormField(
+                              controller: _tagController,
+                              decoration: InputDecoration(
+                                  hintText: '加上标签吧，找起来更方便',
+                                  suffixIcon: IconButton(
+                                      icon: Icon(Icons.delete_forever),
+                                      onPressed: () {
+                                        _tagController.clear();
+                                      })),
+                              onFieldSubmitted: _updateTags,
+                              style: TextStyle(fontSize: 10),
+                            ),
+                          )))
                 ],
               ),
             )),
