@@ -41,6 +41,7 @@ class MyApp extends StatelessWidget {
             'https://cdn.dribbble.com/users/3641854/screenshots/8201011/shot-cropped-1573712443265.png?compress=1&resize=400x300',
             50));
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Welcome to MeiTou',
       home: Container(
           color: Colors.lightGreen, child: SafeArea(child: RandomWords())),
