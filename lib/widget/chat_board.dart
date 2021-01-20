@@ -194,7 +194,7 @@ class _ChatBoardState extends State<ChatBoard> {
                             ))),
                     Container(
                       color: Colors.black,
-                      height: 30,
+                      padding: EdgeInsets.only(top: 5),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -210,26 +210,44 @@ class _ChatBoardState extends State<ChatBoard> {
                         ],
                       ),
                     ),
-                    Container(
-                        color: Colors.lightGreen,
-                        child: Padding(
-                          padding: EdgeInsets.only(left: 10, right: 10),
-                          child: TextFormField(
-                            maxLines: null,
-                            keyboardType: TextInputType.multiline,
-                            controller: _controller,
-                            style:
-                                TextStyle(backgroundColor: Colors.lightGreen),
-                            decoration: InputDecoration(
-                                hintText: '想什么呢，跟我们说说吧',
-                                suffixIcon: IconButton(
-                                    icon: Icon(Icons.delete_forever),
-                                    onPressed: () {
-                                      _controller.clear();
-                                    })),
-                            onFieldSubmitted: _sendClicked,
-                          ),
-                        )),
+                    Row(
+                      children: [
+                        Container(
+                            color: Colors.lightGreen,
+                            width: MediaQuery.of(context).size.width * 0.8,
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 10, right: 10),
+                              child: TextFormField(
+                                maxLines: null,
+                                keyboardType: TextInputType.multiline,
+                                controller: _controller,
+                                style: TextStyle(
+                                    backgroundColor: Colors.lightGreen),
+                                decoration: InputDecoration(
+                                    hintText: '想什么呢，跟我们说说吧',
+                                    suffixIcon: IconButton(
+                                        icon: Icon(Icons.delete_forever),
+                                        onPressed: () {
+                                          _controller.clear();
+                                        })),
+                              ),
+                            )),
+                        Container(
+                          padding: EdgeInsets.only(right: 10, top: 5),
+                          width: MediaQuery.of(context).size.width * 0.2,
+                          child: FlatButton(
+                              color: Color(0xFFf4ebc1),
+                              onPressed: () {
+                                print('send button');
+                                _sendClicked();
+                              },
+                              child: Icon(
+                                Icons.send_rounded,
+                                color: Colors.lightGreen,
+                              )),
+                        )
+                      ],
+                    ),
                     Container(
                         color: Colors.lightGreen,
                         child: Padding(
@@ -316,17 +334,17 @@ class _ChatBoardState extends State<ChatBoard> {
     }
   }
 
-  void _sendClicked(text) {
-    if (text == "" || _tagController.text == "") return;
-    print('entered [$text] in channel ${widget.channel.name}');
+  void _sendClicked() {
+    if (_controller.text == "" || _tagController.text == "") return;
+    print('entered [$_controller.text] in channel ${widget.channel.name}');
     String curUserId = MeitouConfig.getConfig('user_id');
     if (curUserId == null) {
       print('why not logged in');
       return;
     }
-    String msg =
-        Message(widget.channel.id, curUserId, text, _tagController.text, '')
-            .toJSON();
+    String msg = Message(widget.channel.id, curUserId, _controller.text,
+            _tagController.text, '')
+        .toJSON();
     sw.sendMessage(msg);
     _controller.clear();
   }
