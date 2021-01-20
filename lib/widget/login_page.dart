@@ -15,7 +15,43 @@ class _LoginPageState extends State<LoginPage> {
   var _emailController = TextEditingController();
   var _passwordController = TextEditingController();
 
+  void _showAlertDialog(BuildContext context) {
+    // Create button
+    Widget okButton = FlatButton(
+      child: Text("谢谢"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    // Create AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("登陆失败"),
+      content: Text("请检查你的邮箱和密码"),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   void _signIn() async {
+    try {
+      await Amplify.Auth.fetchAuthSession(
+          options: CognitoSessionOptions(getAWSCredentials: true));
+      print('already signed in');
+      return;
+    } on AuthError catch (e) {
+      print('not logged in, proceed to sign in');
+    }
+
     try {
       SignInResult res = await Amplify.Auth.signIn(
         username: _emailController.text,
@@ -28,7 +64,8 @@ class _LoginPageState extends State<LoginPage> {
       // print('has user logged in ? ${sess.isSignedIn}');
       // print(sess.userPoolTokens.idToken);
     } on AuthError catch (e) {
-      print(e.toString());
+      print(e);
+      _showAlertDialog(context);
     }
   }
 
@@ -101,6 +138,8 @@ class _LoginPageState extends State<LoginPage> {
             child: Padding(
               padding: EdgeInsets.only(left: 40, right: 40),
               child: TextField(
+                autocorrect: false,
+                enableSuggestions: false,
                 style: TextStyle(color: Colors.white),
                 controller: _emailController,
                 decoration: InputDecoration(
@@ -123,6 +162,8 @@ class _LoginPageState extends State<LoginPage> {
             child: Padding(
               padding: EdgeInsets.only(left: 40, right: 40),
               child: TextField(
+                autocorrect: false,
+                enableSuggestions: false,
                 style: TextStyle(color: Colors.white),
                 controller: _passwordController,
                 decoration: InputDecoration(
