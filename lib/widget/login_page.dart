@@ -50,6 +50,7 @@ class _LoginPageState extends State<LoginPage> {
           options: CognitoSessionOptions(getAWSCredentials: true));
       print('already signed in');
       _fetchUserInfo();
+      Navigator.of(context).pushReplacementNamed('/home');
       return;
     } on AuthError catch (e) {
       print('not logged in, proceed to sign in');
@@ -68,6 +69,7 @@ class _LoginPageState extends State<LoginPage> {
       // print(sess.userPoolTokens.idToken);
       _fetchUserInfo();
       _showAlertDialog(context, '好嘞', '登陆成功', '开始探索美投吧！');
+      Navigator.of(context).pushReplacementNamed('/home');
     } on AuthError catch (e) {
       print(e);
       _showAlertDialog(context, '谢谢', '登陆失败', '请检查你的邮箱密码...');
@@ -127,7 +129,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Scaffold(
+        body: Container(
       color: Colors.lightGreen,
       child: Column(
         children: [
@@ -202,7 +205,7 @@ class _LoginPageState extends State<LoginPage> {
           )
         ],
       ),
-    );
+    ));
   }
 
   void _loginClick() {

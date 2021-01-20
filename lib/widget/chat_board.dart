@@ -15,41 +15,6 @@ class ChatBoard extends StatefulWidget {
   _ChatBoardState createState() => _ChatBoardState();
 }
 
-List<Message> fakeMessages = [
-  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'u-0-0-1', 'hello A',
-      'tag1,wz', '1610930682209'),
-  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'u-0-0-2', 'hello echo A',
-      'AZ,wz', '1610930682210'),
-  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'u-0-0-1', 'hello B',
-      'tag88,w222,SQ', '1610930682212'),
-  Message(
-      '0e0cdd58-c7e1-4212-b75c-f27f9c430290',
-      'u-0-0-2',
-      'hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B hello echo B',
-      'tag1,AZ',
-      '1610930682209'),
-  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'u-0-0-1', 'hello C',
-      'tag1,wz', '1610930682249'),
-  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'u-0-0-2', 'hello echo C',
-      'tag88,wz', '1610930682229'),
-  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'u-0-0-1', 'hello D',
-      'tag1,wz,BBB', '1610930682239'),
-  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'u-0-0-2', 'hello echo D',
-      'tag1,wz', '1610930682589'),
-  Message(
-      '0e0cdd58-c7e1-4212-b75c-f27f9c430290',
-      'u-0-0-1',
-      'https://img.icons8.com/ios/452/flutter.png',
-      'tag1,wz,IMG',
-      '1610930682259'),
-  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'u-0-0-2', 'hello echo E',
-      'tag0,AZ', '1610930682269'),
-  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'u-0-0-1', 'hello F', 'tag0',
-      '1610930682279'),
-  Message('0e0cdd58-c7e1-4212-b75c-f27f9c430290', 'u-0-0-2', 'hello echo F',
-      'tag1,wz', '1610930682230'),
-];
-
 class _ChatBoardState extends State<ChatBoard> {
   var _controller = TextEditingController();
   var _tagController = TextEditingController();
@@ -128,180 +93,179 @@ class _ChatBoardState extends State<ChatBoard> {
       // _scrollToEnd();
       WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToEnd());
     }
-    return WillPopScope(
-        child: Container(
-          color: Colors.lightGreen,
-          child: SafeArea(
-              child: Scaffold(
-                  endDrawer: Container(
-                      width: MediaQuery.of(context).size.width * 0.8,
-                      child: Drawer(
-                        // Add a ListView to the drawer. This ensures the user can scroll
-                        // through the options in the drawer if there isn't enough vertical
-                        // space to fit everything.
-                        child: Container(
-                          color: Color(0xFFf4ebc1),
-                          child: ListView(
-                            // Important: Remove any padding from the ListView.
-                            padding: EdgeInsets.zero,
-                            children: <Widget>[
-                              DrawerHeader(
-                                child: Text('其他骚操作'),
-                                decoration:
-                                    BoxDecoration(color: Colors.lightGreen),
-                              ),
-                              ListTile(
-                                title: Text('无任何神奇问题'),
-                                onTap: () {
-                                  // Update the state of the app.
-                                  // ...
-                                  print('所有问题 tapped');
-                                },
-                              ),
-                              Divider(),
-                              ListTile(
-                                title: Text('所有标签(#######)'),
-                                onTap: () {
-                                  // Update the state of the app.
-                                  print('所有标签 tapped');
-                                },
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 2.0),
-                                child: new Column(
-                                  mainAxisSize: MainAxisSize.max,
+    return Container(
+      color: Colors.lightGreen,
+      child: SafeArea(
+          child: Scaffold(
+              endDrawer: Container(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  child: Drawer(
+                    // Add a ListView to the drawer. This ensures the user can scroll
+                    // through the options in the drawer if there isn't enough vertical
+                    // space to fit everything.
+                    child: Container(
+                      color: Color(0xFFf4ebc1),
+                      child: ListView(
+                        // Important: Remove any padding from the ListView.
+                        padding: EdgeInsets.zero,
+                        children: <Widget>[
+                          DrawerHeader(
+                            child: Text('其他骚操作'),
+                            decoration: BoxDecoration(color: Colors.lightGreen),
+                          ),
+                          ListTile(
+                            title: Text('无任何神奇问题'),
+                            onTap: () {
+                              // Update the state of the app.
+                              // ...
+                              print('所有问题 tapped');
+                            },
+                          ),
+                          Divider(),
+                          ListTile(
+                            title: Text('所有标签(#######)'),
+                            onTap: () {
+                              // Update the state of the app.
+                              print('所有标签 tapped');
+                            },
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 2.0),
+                            child: new Column(
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                new Wrap(
+                                  spacing: 2.0,
+                                  direction: Axis.horizontal,
                                   children: <Widget>[
-                                    new Wrap(
-                                      spacing: 2.0,
-                                      direction: Axis.horizontal,
-                                      children: <Widget>[
-                                        new Chip(
-                                          label: new Text('AWS'),
-                                          backgroundColor: Colors.green,
-                                        ),
-                                        new Chip(
-                                          label: new Text('AZ'),
-                                          backgroundColor: Colors.green,
-                                        ),
-                                        new Chip(
-                                          label: new Text('TSLA'),
-                                          backgroundColor: Colors.green,
-                                        ),
-                                        new ActionChip(
-                                          elevation: 2,
-                                          onPressed: () {
-                                            print('cih');
-                                          },
-                                          label: new Text('BIO'),
-                                          backgroundColor: Colors.green,
-                                        ),
-                                        new Chip(
-                                          label: new Text('FFY'),
-                                          backgroundColor: Colors.green,
-                                        )
-                                      ],
+                                    new Chip(
+                                      label: new Text('AWS'),
+                                      backgroundColor: Colors.green,
+                                    ),
+                                    new Chip(
+                                      label: new Text('AZ'),
+                                      backgroundColor: Colors.green,
+                                    ),
+                                    new Chip(
+                                      label: new Text('TSLA'),
+                                      backgroundColor: Colors.green,
+                                    ),
+                                    new ActionChip(
+                                      elevation: 2,
+                                      onPressed: () {
+                                        print('cih');
+                                      },
+                                      label: new Text('BIO'),
+                                      backgroundColor: Colors.green,
+                                    ),
+                                    new Chip(
+                                      label: new Text('FFY'),
+                                      backgroundColor: Colors.green,
                                     )
                                   ],
-                                ),
-                              ),
-                            ],
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                      )),
-                  appBar: AppBar(
-                    elevation: 0,
-                    title: GestureDetector(
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(widget.channel.name),
-                            Text(
-                              widget.channel.desc,
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: Colors.yellow,
-                              ),
-                            )
-                          ]),
-                      onTap: () {
-                        print('channel info tapped');
-                      },
+                        ],
+                      ),
                     ),
-                    // actions: [IconButton(icon: Icon(Icons.menu), onPressed: () => {})]
-                  ),
-                  body: Container(
-                    color: Colors.lightGreen,
-                    child: Column(
+                  )),
+              appBar: AppBar(
+                elevation: 0,
+                title: GestureDetector(
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                            child: GestureDetector(
-                                onTap: () {
-                                  FocusScope.of(context)
-                                      .requestFocus(new FocusNode());
+                        Text(widget.channel.name),
+                        Text(
+                          widget.channel.desc,
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.yellow,
+                          ),
+                        )
+                      ]),
+                  onTap: () {
+                    print('channel info tapped');
+                  },
+                ),
+                // actions: [IconButton(icon: Icon(Icons.menu), onPressed: () => {})]
+              ),
+              body: Container(
+                color: Colors.lightGreen,
+                child: Column(
+                  children: [
+                    Expanded(
+                        child: GestureDetector(
+                            onPanEnd: (d) {
+                              print('pannd');
+                              // Navigator.pop(context);
+                            },
+                            onTap: () {
+                              FocusScope.of(context)
+                                  .requestFocus(new FocusNode());
+                            },
+                            child: Container(
+                              color: Color(0xFFf4ebc1),
+                              child: ListView.separated(
+                                controller: _scrollController,
+                                separatorBuilder: (context, index) => Divider(
+                                  color: Colors.lightGreen,
+                                  height: 1,
+                                ),
+                                itemCount: MessageWarlock.summon()
+                                    .numMessagesInChannel(widget.channel.id),
+                                itemBuilder: (context, index) {
+                                  return MessageLine(
+                                      MessageWarlock.summon()
+                                          .castMessagesInChannel(
+                                              widget.channel.id)[index],
+                                      _addTagToInput);
                                 },
-                                child: Container(
-                                  color: Color(0xFFf4ebc1),
-                                  child: ListView.separated(
-                                    controller: _scrollController,
-                                    separatorBuilder: (context, index) =>
-                                        Divider(
-                                      color: Colors.lightGreen,
-                                      height: 1,
-                                    ),
-                                    itemCount: MessageWarlock.summon()
-                                        .numMessagesInChannel(
-                                            widget.channel.id),
-                                    itemBuilder: (context, index) {
-                                      return MessageLine(
-                                          MessageWarlock.summon()
-                                              .castMessagesInChannel(
-                                                  widget.channel.id)[index],
-                                          _addTagToInput);
-                                    },
-                                  ),
-                                ))),
-                        Container(
-                            color: Colors.lightGreen,
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 10, right: 10),
+                              ),
+                            ))),
+                    Container(
+                        color: Colors.lightGreen,
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 10, right: 10),
+                          child: TextFormField(
+                            controller: _controller,
+                            style:
+                                TextStyle(backgroundColor: Colors.lightGreen),
+                            decoration: InputDecoration(
+                                hintText: '想什么呢，跟我们说说吧',
+                                suffixIcon: IconButton(
+                                    icon: Icon(Icons.delete_forever),
+                                    onPressed: () {
+                                      _controller.clear();
+                                    })),
+                            onFieldSubmitted: _sendClicked,
+                          ),
+                        )),
+                    Container(
+                        color: Colors.lightGreen,
+                        child: Padding(
+                            padding: EdgeInsets.only(left: 10, right: 10),
+                            child: Container(
+                              height: 40,
                               child: TextFormField(
-                                controller: _controller,
-                                style: TextStyle(
-                                    backgroundColor: Colors.lightGreen),
+                                controller: _tagController,
                                 decoration: InputDecoration(
-                                    hintText: '想什么呢，跟我们说说吧',
+                                    hintText: '加上标签吧，找起来更方便',
                                     suffixIcon: IconButton(
                                         icon: Icon(Icons.delete_forever),
                                         onPressed: () {
-                                          _controller.clear();
+                                          _tagController.clear();
                                         })),
-                                onFieldSubmitted: _sendClicked,
+                                onFieldSubmitted: _updateTags,
+                                style: TextStyle(fontSize: 10),
                               ),
-                            )),
-                        Container(
-                            color: Colors.lightGreen,
-                            child: Padding(
-                                padding: EdgeInsets.only(left: 10, right: 10),
-                                child: Container(
-                                  height: 40,
-                                  child: TextFormField(
-                                    controller: _tagController,
-                                    decoration: InputDecoration(
-                                        hintText: '加上标签吧，找起来更方便',
-                                        suffixIcon: IconButton(
-                                            icon: Icon(Icons.delete_forever),
-                                            onPressed: () {
-                                              _tagController.clear();
-                                            })),
-                                    onFieldSubmitted: _updateTags,
-                                    style: TextStyle(fontSize: 10),
-                                  ),
-                                )))
-                      ],
-                    ),
-                  ))),
-        ),
-        onWillPop: _onPageExit);
+                            )))
+                  ],
+                ),
+              ))),
+    );
   }
 
   Future<bool> _onPageExit() {
@@ -369,6 +333,7 @@ class _ChatBoardState extends State<ChatBoard> {
   void dispose() {
     // widget.channel.sink.close();
     print('disposing chat board');
+    _onPageExit();
     super.dispose();
   }
 }

@@ -44,12 +44,18 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Welcome to MeiTou',
       home: Container(
-          color: Colors.lightGreen, child: SafeArea(child: RandomWords())),
+        color: Colors.lightGreen,
+        child: SafeArea(
+          // child: RandomWords(),
+          child: LoginPage(),
+        ),
+      ),
       theme: ThemeData(
         primaryColor: Colors.lightGreen,
         scaffoldBackgroundColor: Colors.white,
       ),
       routes: {
+        '/home': (context) => RandomWords(),
         '/chat': (context) => ChatPage(),
       },
     );
@@ -65,15 +71,9 @@ class _RandomWordsState extends State<RandomWords> {
   final _saved = Set<WordPair>();
   final _biggerFont = TextStyle(fontSize: 18.0);
   var _index = 0;
-  final List<Widget> children = [
-    Placeholder(),
-    ChatPage(),
-    Placeholder(),
-    UserProfile()
-  ];
+  final List<Widget> children = [ChatPage(), Placeholder(), UserProfile()];
 
   final List<Widget> appbars = [
-    Placeholder(),
     Placeholder(),
     Placeholder(),
     Placeholder(),
@@ -82,56 +82,20 @@ class _RandomWordsState extends State<RandomWords> {
   @override
   void initState() {
     super.initState();
-    // _configureAmplify();
-    children[0] = LoginPage();
-    // children[0] = DefaultTabController(
-    //   length: 3,
-    //   child: Scaffold(
-    //     appBar: AppBar(
-    //       title: Text("美投平台"),
-    //       bottom: TabBar(
-    //         tabs: [
-    //           Tab(
-    //               icon: Icon(Icons.bar_chart),
-    //               child: Container(
-    //                 child: Text('财经头条'),
-    //               )),
-    //           Tab(
-    //               icon: Icon(Icons.mail_outline),
-    //               child: Container(
-    //                 child: Text('机密信息'),
-    //               )),
-    //           Tab(
-    //               icon: Icon(Icons.cloud_queue_sharp),
-    //               child: Container(
-    //                 child: Text('云计算'),
-    //               )),
-    //         ],
-    //       ),
-    //     ),
-    //     body: TabBarView(
-    //       children: [
-    //         Icon(Icons.bar_chart, size: 200),
-    //         Icon(Icons.mail_outline, size: 200),
-    //         Icon(Icons.cloud_queue_sharp, size: 200),
-    //       ],
-    //     ),
-    //   ),
-    // );
+    // children[0] = LoginPage();
 
     final mainAppBar = AppBar(
       elevation: 0,
       title: Text('美投'),
       actions: [IconButton(icon: Icon(Icons.list), onPressed: _pushSaved)],
     );
-    appbars[0] = null;
-    appbars[1] = AppBar(
+    appbars[0] = AppBar(
       elevation: 0,
       title: Text('话题频道'),
       actions: [IconButton(icon: Icon(Icons.add), onPressed: _addChannel)],
     );
-    appbars[2] = mainAppBar;
-    appbars[3] = AppBar(
+    appbars[1] = mainAppBar;
+    appbars[2] = AppBar(
       elevation: 0,
       title: Text('我的信息'),
       actions: [IconButton(icon: Icon(Icons.add), onPressed: _moreOnMe)],
@@ -215,8 +179,6 @@ class _RandomWordsState extends State<RandomWords> {
             type: BottomNavigationBarType.fixed,
             currentIndex: _index,
             items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.accessibility), label: '搞社交'),
               BottomNavigationBarItem(icon: Icon(Icons.chat), label: '去聊天'),
               BottomNavigationBarItem(icon: Icon(Icons.book), label: '受教育'),
               BottomNavigationBarItem(
