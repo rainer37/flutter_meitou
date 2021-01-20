@@ -143,7 +143,7 @@ class _UserProfileState extends State<UserProfile> {
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.lightGreen,
                     boxShadow: [
-                      BoxShadow(color: Colors.white, spreadRadius: 3),
+                      BoxShadow(color: Color(0xFFf4ebc1), spreadRadius: 3),
                     ],
                   ),
                 );

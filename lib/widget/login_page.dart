@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
 
 import 'package:amplify_core/amplify_core.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
@@ -15,10 +17,10 @@ class _LoginPageState extends State<LoginPage> {
   var _emailController = TextEditingController();
   var _passwordController = TextEditingController();
 
-  void _showAlertDialog(BuildContext context) {
+  void _showAlertDialog(BuildContext context, String action, title, content) {
     // Create button
     Widget okButton = FlatButton(
-      child: Text("谢谢"),
+      child: Text(action),
       onPressed: () {
         Navigator.of(context).pop();
       },
@@ -26,8 +28,8 @@ class _LoginPageState extends State<LoginPage> {
 
     // Create AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("登陆失败"),
-      content: Text("请检查你的邮箱和密码"),
+      title: Text(title),
+      content: Text(content),
       actions: [
         okButton,
       ],
@@ -47,6 +49,7 @@ class _LoginPageState extends State<LoginPage> {
       await Amplify.Auth.fetchAuthSession(
           options: CognitoSessionOptions(getAWSCredentials: true));
       print('already signed in');
+      _fetchUserInfo();
       return;
     } on AuthError catch (e) {
       print('not logged in, proceed to sign in');
@@ -63,9 +66,11 @@ class _LoginPageState extends State<LoginPage> {
       //     options: CognitoSessionOptions(getAWSCredentials: true));
       // print('has user logged in ? ${sess.isSignedIn}');
       // print(sess.userPoolTokens.idToken);
+      _fetchUserInfo();
+      _showAlertDialog(context, '好嘞', '登陆成功', '开始探索美投吧！');
     } on AuthError catch (e) {
       print(e);
-      _showAlertDialog(context);
+      _showAlertDialog(context, '谢谢', '登陆失败', '请检查你的邮箱密码...');
     }
   }
 
@@ -202,5 +207,29 @@ class _LoginPageState extends State<LoginPage> {
 
   void _loginClick() {
     _signIn();
+  }
+
+  void _fetchUserInfo() async {
+    if (MeitouConfig.containsConfig('user_name') &&
+        MeitouConfig.containsConfig('coins')) {
+      print('already has user info??/');
+      return;
+    }
+    final user_id = '198405c8-ca46-4818-ab51-5b612149d2d1';
+    var url =
+        "https://usdeuu1gp5.execute-api.us-west-2.amazonaws.com/user/$user_id/info";
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      var jsonResponse = convert.jsonDecode(response.body);
+      // var itemCount = jsonResponse['totalItems'];
+      // print('Number of books about http: $jsonResponse.');
+      // print("${jsonResponse}");
+      MeitouConfig.setConfig('user_id', jsonResponse['userId']['S']);
+      MeitouConfig.setConfig('user_name', jsonResponse['user_name']['S']);
+      MeitouConfig.setConfig('coins', int.parse(jsonResponse['coins']['N']));
+      print('user info fetched!');
+    } else {
+      print('Request failed with status: ${response.statusCode}.');
+    }
   }
 }

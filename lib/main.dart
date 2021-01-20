@@ -120,16 +120,19 @@ class _RandomWordsState extends State<RandomWords> {
     // );
 
     final mainAppBar = AppBar(
+      elevation: 0,
       title: Text('美投'),
       actions: [IconButton(icon: Icon(Icons.list), onPressed: _pushSaved)],
     );
     appbars[0] = null;
     appbars[1] = AppBar(
+      elevation: 0,
       title: Text('话题频道'),
       actions: [IconButton(icon: Icon(Icons.add), onPressed: _addChannel)],
     );
     appbars[2] = mainAppBar;
     appbars[3] = AppBar(
+      elevation: 0,
       title: Text('我的信息'),
       actions: [IconButton(icon: Icon(Icons.add), onPressed: _moreOnMe)],
     );
@@ -140,6 +143,7 @@ class _RandomWordsState extends State<RandomWords> {
         .push(MaterialPageRoute<void>(builder: (BuildContext context) {
       return Scaffold(
           appBar: AppBar(
+            elevation: 0,
             title: Text('我的其他骚操作'),
           ),
           body: Text('operational excellence'));
@@ -151,6 +155,7 @@ class _RandomWordsState extends State<RandomWords> {
         .push(MaterialPageRoute<void>(builder: (BuildContext context) {
       return Scaffold(
           appBar: AppBar(
+            elevation: 0,
             title: Text('开一个新的频道吧'),
           ),
           body: Text('你有什么想说的'));
@@ -180,6 +185,7 @@ class _RandomWordsState extends State<RandomWords> {
 
       return Scaffold(
           appBar: AppBar(
+            elevation: 0,
             title: Text('Saved Hearted'),
           ),
           body: ListView(children: divided));

@@ -209,6 +209,7 @@ class _ChatBoardState extends State<ChatBoard> {
                         ),
                       )),
                   appBar: AppBar(
+                    elevation: 0,
                     title: GestureDetector(
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
