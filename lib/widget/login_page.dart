@@ -46,9 +46,9 @@ class _LoginPageState extends State<LoginPage> {
 
   void _signIn() async {
     try {
-      await Amplify.Auth.fetchAuthSession(
+      CognitoAuthSession sess = await Amplify.Auth.fetchAuthSession(
           options: CognitoSessionOptions(getAWSCredentials: true));
-      print('already signed in');
+      print('${sess.userSub} already signed in');
       _fetchUserInfo();
       Navigator.of(context).pushReplacementNamed('/home');
       return;
@@ -66,7 +66,8 @@ class _LoginPageState extends State<LoginPage> {
       // CognitoAuthSession sess = await Amplify.Auth.fetchAuthSession(
       //     options: CognitoSessionOptions(getAWSCredentials: true));
       // print('has user logged in ? ${sess.isSignedIn}');
-      // print(sess.userPoolTokens.idToken);
+      // print(sess.userSub);
+
       _fetchUserInfo();
       _showAlertDialog(context, '好嘞', '登陆成功', '开始探索美投吧！');
       Navigator.of(context).pushReplacementNamed('/home');

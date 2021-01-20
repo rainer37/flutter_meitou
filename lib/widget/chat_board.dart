@@ -105,7 +105,52 @@ class _ChatBoardState extends State<ChatBoard> {
                         padding: EdgeInsets.zero,
                         children: <Widget>[
                           DrawerHeader(
-                            child: Text('其他骚操作'),
+                            child: Row(children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Text(
+                                        widget.channel.name,
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10, vertical: 5),
+                                      child: Text(
+                                        widget.channel.ownerId,
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10, vertical: 5),
+                                      child: Text(
+                                        widget.channel.desc,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                flex: 12,
+                              ),
+                              Expanded(
+                                child: Column(),
+                                flex: 1,
+                              )
+                            ]),
                             decoration: BoxDecoration(color: Colors.lightGreen),
                           ),
                           ListTile(
@@ -145,16 +190,12 @@ class _ChatBoardState extends State<ChatBoard> {
               appBar: AppBar(
                 elevation: 0,
                 title: GestureDetector(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(widget.channel.name),
                         Text(
-                          widget.channel.desc,
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Colors.yellow,
-                          ),
+                          widget.channel.name,
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         )
                       ]),
                   onTap: () {
@@ -192,24 +233,6 @@ class _ChatBoardState extends State<ChatBoard> {
                                 },
                               ),
                             ))),
-                    Container(
-                      color: Colors.black,
-                      padding: EdgeInsets.only(top: 5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          FlatButton(
-                              onPressed: () {
-                                print('img button');
-                                _imagePicker();
-                              },
-                              child: Icon(
-                                Icons.image,
-                                color: Colors.white,
-                              ))
-                        ],
-                      ),
-                    ),
                     Row(
                       children: [
                         Container(
@@ -218,6 +241,7 @@ class _ChatBoardState extends State<ChatBoard> {
                             child: Padding(
                               padding: EdgeInsets.only(left: 10, right: 10),
                               child: TextFormField(
+                                textAlignVertical: TextAlignVertical.bottom,
                                 maxLines: null,
                                 keyboardType: TextInputType.multiline,
                                 controller: _controller,
@@ -248,25 +272,55 @@ class _ChatBoardState extends State<ChatBoard> {
                         )
                       ],
                     ),
-                    Container(
-                        color: Colors.lightGreen,
-                        child: Padding(
-                            padding: EdgeInsets.only(left: 10, right: 10),
-                            child: Container(
-                              height: 40,
-                              child: TextFormField(
-                                controller: _tagController,
-                                decoration: InputDecoration(
-                                    hintText: '加上标签吧，找起来更方便',
-                                    suffixIcon: IconButton(
-                                        icon: Icon(Icons.delete_forever),
-                                        onPressed: () {
-                                          _tagController.clear();
-                                        })),
-                                onFieldSubmitted: _updateTags,
-                                style: TextStyle(fontSize: 10),
-                              ),
-                            )))
+                    Row(
+                      children: [
+                        Container(
+                            color: Colors.lightGreen,
+                            width: MediaQuery.of(context).size.width * 0.6,
+                            child: Padding(
+                                padding: EdgeInsets.only(left: 10, right: 10),
+                                child: TextFormField(
+                                  textAlignVertical: TextAlignVertical.bottom,
+                                  controller: _tagController,
+                                  decoration: InputDecoration(
+                                      hintText: '加上标签吧，找起来更方便',
+                                      suffixIcon: IconButton(
+                                          icon: Icon(Icons.delete_forever),
+                                          onPressed: () {
+                                            _tagController.clear();
+                                          })),
+                                  onFieldSubmitted: _updateTags,
+                                  style: TextStyle(fontSize: 10),
+                                ))),
+                        Container(
+                          padding: EdgeInsets.only(right: 10, top: 5),
+                          width: MediaQuery.of(context).size.width * 0.2,
+                          child: FlatButton(
+                              color: Color(0xFFf4ebc1),
+                              onPressed: () {
+                                print('IMG button');
+                                // _imagePicker();
+                              },
+                              child: Icon(
+                                Icons.image,
+                                color: Colors.lightGreen,
+                              )),
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(right: 10, top: 5),
+                          width: MediaQuery.of(context).size.width * 0.2,
+                          child: FlatButton(
+                              color: Color(0xFFf4ebc1),
+                              onPressed: () {
+                                print('SQ button');
+                              },
+                              child: Icon(
+                                Icons.question_answer,
+                                color: Colors.lightGreen,
+                              )),
+                        )
+                      ],
+                    )
                   ],
                 ),
               ))),
@@ -281,9 +335,9 @@ class _ChatBoardState extends State<ChatBoard> {
     );
     if (galleryFile != null) {
       print(galleryFile.path);
-      setState(() {
-        _img = File(galleryFile.path);
-      });
+      // setState(() {
+      //   _img = File(galleryFile.path);
+      // });
     }
   }
 

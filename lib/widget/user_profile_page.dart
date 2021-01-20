@@ -134,7 +134,7 @@ class _UserProfileState extends State<UserProfile> {
                     Padding(
                         padding: EdgeInsets.only(left: 10, right: 5),
                         child: Text(
-                          '## Channnnnnn \$5 per month',
+                          '## 某一个神奇的频道 \$5 per month',
                           textScaleFactor: 1.2,
                         )),
                     Icon(Icons.album_outlined, color: Colors.yellow),
