@@ -1,3 +1,5 @@
+import 'dart:ffi';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_meitou/model/message_warlock.dart';
 import 'package:flutter_meitou/model/channel.dart';
@@ -7,6 +9,8 @@ import 'package:flutter_meitou/model/socket_warrior.dart';
 import 'package:flutter_meitou/widget/message_line.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
+
+import 'package:image_picker/image_picker.dart';
 
 class ChatBoard extends StatefulWidget {
   final Channel channel;
@@ -27,13 +31,6 @@ class _ChatBoardState extends State<ChatBoard> {
   @override
   void initState() {
     super.initState();
-    // messages = fakeMessages;
-    // for (Message m in messages) {
-    //   MessageWarlock.summon().addMessageToChannel(widget.channel.id, m);
-    // }
-    // MessageWarlock.summon().spellMessagesInChannel(widget.channel.id);
-    // messages.sort((a, b) => a.lastUpdatedAt.compareTo(b.lastUpdatedAt));
-    // print(messages);
     _fetchChatHistory();
     sw = SocketWarrior(widget.channel.id);
     String serverEndpoint = '${MeitouConfig.getConfig('wsEndpointUrl')}';
@@ -42,6 +39,7 @@ class _ChatBoardState extends State<ChatBoard> {
   }
 
   void _fetchChatHistory() async {
+    print('fetching chat history');
     String lastMessageSeen =
         MessageWarlock.summon().lastSeenInChannel(widget.channel.id);
     var url =
@@ -100,9 +98,6 @@ class _ChatBoardState extends State<ChatBoard> {
               endDrawer: Container(
                   width: MediaQuery.of(context).size.width * 0.8,
                   child: Drawer(
-                    // Add a ListView to the drawer. This ensures the user can scroll
-                    // through the options in the drawer if there isn't enough vertical
-                    // space to fit everything.
                     child: Container(
                       color: Color(0xFFf4ebc1),
                       child: ListView(
@@ -130,39 +125,15 @@ class _ChatBoardState extends State<ChatBoard> {
                             },
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(bottom: 2.0),
+                            padding: const EdgeInsets.only(
+                                bottom: 2.0, left: 10, right: 10),
                             child: new Column(
                               mainAxisSize: MainAxisSize.max,
                               children: <Widget>[
                                 new Wrap(
                                   spacing: 2.0,
                                   direction: Axis.horizontal,
-                                  children: <Widget>[
-                                    new Chip(
-                                      label: new Text('AWS'),
-                                      backgroundColor: Colors.green,
-                                    ),
-                                    new Chip(
-                                      label: new Text('AZ'),
-                                      backgroundColor: Colors.green,
-                                    ),
-                                    new Chip(
-                                      label: new Text('TSLA'),
-                                      backgroundColor: Colors.green,
-                                    ),
-                                    new ActionChip(
-                                      elevation: 2,
-                                      onPressed: () {
-                                        print('cih');
-                                      },
-                                      label: new Text('BIO'),
-                                      backgroundColor: Colors.green,
-                                    ),
-                                    new Chip(
-                                      label: new Text('FFY'),
-                                      backgroundColor: Colors.green,
-                                    )
-                                  ],
+                                  children: _buildHashTagChips(),
                                 )
                               ],
                             ),
@@ -198,10 +169,6 @@ class _ChatBoardState extends State<ChatBoard> {
                   children: [
                     Expanded(
                         child: GestureDetector(
-                            onPanEnd: (d) {
-                              print('pannd');
-                              // Navigator.pop(context);
-                            },
                             onTap: () {
                               FocusScope.of(context)
                                   .requestFocus(new FocusNode());
@@ -226,10 +193,30 @@ class _ChatBoardState extends State<ChatBoard> {
                               ),
                             ))),
                     Container(
+                      color: Colors.black,
+                      height: 30,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          FlatButton(
+                              onPressed: () {
+                                print('img button');
+                                _imagePicker();
+                              },
+                              child: Icon(
+                                Icons.image,
+                                color: Colors.white,
+                              ))
+                        ],
+                      ),
+                    ),
+                    Container(
                         color: Colors.lightGreen,
                         child: Padding(
                           padding: EdgeInsets.only(left: 10, right: 10),
                           child: TextFormField(
+                            maxLines: null,
+                            keyboardType: TextInputType.multiline,
                             controller: _controller,
                             style:
                                 TextStyle(backgroundColor: Colors.lightGreen),
@@ -268,6 +255,20 @@ class _ChatBoardState extends State<ChatBoard> {
     );
   }
 
+  final picker = ImagePicker();
+  File _img;
+  void _imagePicker() async {
+    final galleryFile = await picker.getImage(
+      source: ImageSource.gallery,
+    );
+    if (galleryFile != null) {
+      print(galleryFile.path);
+      setState(() {
+        _img = File(galleryFile.path);
+      });
+    }
+  }
+
   Future<bool> _onPageExit() {
     print('exiting channel ${widget.channel.name}');
     if (sw != null) {
@@ -277,6 +278,7 @@ class _ChatBoardState extends State<ChatBoard> {
   }
 
   void _addTagToInput(tag) {
+    print('adding tag');
     this.setState(() {
       if (_tagController.text == "")
         _tagController.text += tag;
@@ -327,6 +329,24 @@ class _ChatBoardState extends State<ChatBoard> {
             .toJSON();
     sw.sendMessage(msg);
     _controller.clear();
+  }
+
+  Widget _buildChip(String text, Color color) {
+    return ActionChip(
+      label: new Text(text),
+      backgroundColor: color,
+      onPressed: () {
+        print(MessageWarlock.summon()
+            .summonTaggedMessages(widget.channel.id, text));
+      },
+    );
+  }
+
+  List<Widget> _buildHashTagChips() {
+    return MessageWarlock.summon()
+        .releaseTheRageOfTags(widget.channel.id)
+        .map((e) => _buildChip(e, Colors.green))
+        .toList();
   }
 
   @override

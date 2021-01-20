@@ -130,82 +130,90 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
-      color: Colors.lightGreen,
-      child: Column(
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height * 0.3,
-            child: CircleAvatar(
-              radius: 100,
-              backgroundImage: NetworkImage(
-                  'https://yt3.ggpht.com/ytc/AAUvwnh90LNf2_wRdm3PPbWtSL7I-h0jOIV0D9P7lqF7=s88-c-k-c0x00ffffff-no-rj'),
-            ),
-          ),
-          Container(
-            child: Padding(
-              padding: EdgeInsets.only(left: 40, right: 40),
-              child: TextField(
-                autocorrect: false,
-                enableSuggestions: false,
-                style: TextStyle(color: Colors.white),
-                controller: _emailController,
-                decoration: InputDecoration(
-                  hintText: '请输入邮箱地址',
-                  hintStyle: TextStyle(color: Colors.white),
-                  enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white, width: 1.0)),
-                  focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white, width: 1.0)),
-                  prefixIcon: const Icon(
-                    Icons.email,
-                    color: Colors.white,
+        body: GestureDetector(
+            onTap: () {
+              FocusScope.of(context).requestFocus(new FocusNode());
+            },
+            child: Container(
+              color: Colors.lightGreen,
+              child: Column(
+                children: [
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.3,
+                    child: CircleAvatar(
+                      radius: 100,
+                      backgroundImage: NetworkImage(
+                          'https://yt3.ggpht.com/ytc/AAUvwnh90LNf2_wRdm3PPbWtSL7I-h0jOIV0D9P7lqF7=s88-c-k-c0x00ffffff-no-rj'),
+                    ),
                   ),
-                ),
-                obscureText: false,
-              ),
-            ),
-          ),
-          Container(
-            child: Padding(
-              padding: EdgeInsets.only(left: 40, right: 40),
-              child: TextField(
-                autocorrect: false,
-                enableSuggestions: false,
-                style: TextStyle(color: Colors.white),
-                controller: _passwordController,
-                decoration: InputDecoration(
-                  hintText: '请输入登陆密码',
-                  hintStyle: TextStyle(color: Colors.white),
-                  enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white, width: 1.0)),
-                  focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white, width: 1.0)),
-                  prefixIcon: const Icon(
-                    Icons.lock,
-                    color: Colors.white,
+                  Container(
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 40, right: 40),
+                      child: TextField(
+                        autocorrect: false,
+                        enableSuggestions: false,
+                        style: TextStyle(color: Colors.white),
+                        controller: _emailController,
+                        decoration: InputDecoration(
+                          hintText: '请输入邮箱地址',
+                          hintStyle: TextStyle(color: Colors.white),
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.white, width: 1.0)),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.white, width: 1.0)),
+                          prefixIcon: const Icon(
+                            Icons.email,
+                            color: Colors.white,
+                          ),
+                        ),
+                        obscureText: false,
+                      ),
+                    ),
                   ),
-                ),
-                obscureText: true,
+                  Container(
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 40, right: 40),
+                      child: TextField(
+                        autocorrect: false,
+                        enableSuggestions: false,
+                        style: TextStyle(color: Colors.white),
+                        controller: _passwordController,
+                        decoration: InputDecoration(
+                          hintText: '请输入登陆密码',
+                          hintStyle: TextStyle(color: Colors.white),
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.white, width: 1.0)),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.white, width: 1.0)),
+                          prefixIcon: const Icon(
+                            Icons.lock,
+                            color: Colors.white,
+                          ),
+                        ),
+                        obscureText: true,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 30),
+                    child: RaisedButton(
+                      padding: EdgeInsets.all(20),
+                      onPressed: _loginClick,
+                      color: Colors.white,
+                      textColor: Colors.lightGreen,
+                      child: Text(
+                        '开始涨涨涨！',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ),
+                  )
+                ],
               ),
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.only(top: 30),
-            child: RaisedButton(
-              padding: EdgeInsets.all(20),
-              onPressed: _loginClick,
-              color: Colors.white,
-              textColor: Colors.lightGreen,
-              child: Text(
-                '开始涨涨涨！',
-                style: TextStyle(fontSize: 20),
-              ),
-            ),
-          )
-        ],
-      ),
-    ));
+            )));
   }
 
   void _loginClick() {

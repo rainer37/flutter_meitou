@@ -23,7 +23,27 @@ class MessageWarlock {
   void addMessageToChannel(String channelId, Message msg) {
     if (messageBook[channelId] == null)
       messageBook[channelId] = new SplayTreeSet();
+    for (String tag in msg.hashtags.split(',')) {
+      if (messageBook['$channelId#tag#$tag'] == null)
+        messageBook['$channelId#tag#$tag'] = new SplayTreeSet();
+      messageBook['$channelId#tag#$tag'].add(msg);
+    }
     messageBook[channelId].add(msg);
+  }
+
+  List<String> releaseTheRageOfTags(String channelId) {
+    List<String> tags = messageBook.keys
+        .where((element) => element.startsWith('$channelId#tag#'))
+        .map((e) => e.split('#')[2])
+        .toList();
+    // print(tags);
+    return tags;
+  }
+
+  List<Message> summonTaggedMessages(String channelId, tag) {
+    return messageBook['$channelId#tag#$tag'] == null
+        ? List.empty()
+        : messageBook['$channelId#tag#$tag'].toList();
   }
 
   String lastSeenInChannel(String channelId) {
