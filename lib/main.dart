@@ -25,12 +25,12 @@ class MyApp extends StatelessWidget {
             'https://techcrunch.com/wp-content/uploads/2018/07/logo-2.png',
             99));
     MeitouConfig.setConfig(
-        'USER#u-0-0-2',
+        'USER#204083d4-5c3c-4039-b7f9-5f2a5358a4c3',
         User(
-            'u-0-0-2',
-            'ClientTwo',
-            'clienttwo@hotmail.com',
-            'https://image.shutterstock.com/image-photo/image-260nw-551769190.jpg',
+            '204083d4-5c3c-4039-b7f9-5f2a5358a4c3',
+            '匿名股神',
+            'rainer.1993@hotmail.com',
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Oauth_logo.svg/180px-Oauth_logo.svg.png',
             50));
     MeitouConfig.setConfig(
         'USER#198405c8-ca46-4818-ab51-5b612149d2d1',

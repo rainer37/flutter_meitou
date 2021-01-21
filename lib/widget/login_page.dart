@@ -341,7 +341,7 @@ class _LoginPageState extends State<LoginPage> {
       // var itemCount = jsonResponse['totalItems'];
       // print('Number of books about http: $jsonResponse.');
       // print("${jsonResponse}");
-      MeitouConfig.setConfig('user_id', jsonResponse['userId']);
+      MeitouConfig.setConfig('user_id', jsonResponse['user_id']);
       MeitouConfig.setConfig('user_name', jsonResponse['user_name']);
       MeitouConfig.setConfig('coins', int.parse(jsonResponse['coins']));
       print('user info fetched!');
