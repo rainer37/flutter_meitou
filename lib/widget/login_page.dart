@@ -14,8 +14,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  var _emailController = TextEditingController();
-  var _passwordController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _codeController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
 
   void _showAlertDialog(BuildContext context, String action, title, content) {
     // Create button
@@ -44,12 +45,27 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  void _hasUserLoggedIn() async {
+    try {
+      CognitoAuthSession sess = await Amplify.Auth.fetchAuthSession(
+          options: CognitoSessionOptions(getAWSCredentials: true));
+      print('${sess.userSub} already signed in');
+      _fetchUserInfo(sess.userSub);
+      Navigator.of(context).pushReplacementNamed('/home');
+    } on AuthError catch (e) {
+      print('not logged in, proceed to sign in');
+      setState(() {
+        loginStateCheckInProgress = false;
+      });
+    }
+  }
+
   void _signIn() async {
     try {
       CognitoAuthSession sess = await Amplify.Auth.fetchAuthSession(
           options: CognitoSessionOptions(getAWSCredentials: true));
       print('${sess.userSub} already signed in');
-      _fetchUserInfo();
+      _fetchUserInfo(sess.userSub);
       Navigator.of(context).pushReplacementNamed('/home');
       return;
     } on AuthError catch (e) {
@@ -61,15 +77,14 @@ class _LoginPageState extends State<LoginPage> {
         username: _emailController.text,
         password: _passwordController.text,
       );
-      print('[${_emailController.text}][${_passwordController.text}]');
+      // print('[${_emailController.text}][${_passwordController.text}]');
       print('has user logged in ? ${res.isSignedIn}');
-      // CognitoAuthSession sess = await Amplify.Auth.fetchAuthSession(
-      //     options: CognitoSessionOptions(getAWSCredentials: true));
-      // print('has user logged in ? ${sess.isSignedIn}');
-      // print(sess.userSub);
+      CognitoAuthSession sess = await Amplify.Auth.fetchAuthSession(
+          options: CognitoSessionOptions(getAWSCredentials: true));
+      print('${sess.userSub} just signed in');
 
-      _fetchUserInfo();
-      _showAlertDialog(context, '好嘞', '登陆成功', '开始探索美投吧！');
+      _fetchUserInfo(sess.userSub);
+      // _showAlertDialog(context, '好嘞', '登陆成功', '开始探索美投吧！');
       Navigator.of(context).pushReplacementNamed('/home');
     } on AuthError catch (e) {
       print(e);
@@ -93,30 +108,10 @@ class _LoginPageState extends State<LoginPage> {
 
       // Once Plugins are added, configure Amplify
       await amplifyInstance.configure(amplifyconfig);
-      AmplifyAuthCognito auth = AmplifyAuthCognito();
+      // AmplifyAuthCognito auth = AmplifyAuthCognito();
       setState(() {
         MeitouConfig.setConfig('amplifyConfigured', true);
       });
-      // try {
-      //   Map<String, dynamic> userAttributes = {
-      //     "email": 'rainer.1993@hotmail.com',
-      //     "phone_number": '+12367776456',
-      //     // additional attributes as needed
-      //   };
-      //   SignUpResult res = await Amplify.Auth.signUp(
-      //       username: "rainer.1993@hotmail.com",
-      //       password: "Abcd1234!!!",
-      //       options: CognitoSignUpOptions(userAttributes: userAttributes));
-      //   print('is sign up complete ? ${res.isSignUpComplete}');
-      // } on AuthError catch (e) {
-      //   print(e);
-      // }
-      // try {
-      //   SignUpResult res = await Amplify.Auth.confirmSignUp(
-      //       username: "rainer.1993@hotmail.com", confirmationCode: "838881");
-      // } on AuthError catch (e) {
-      //   print(e);
-      // }
     } on AuthError catch (e) {
       print(e.exceptionList);
     }
@@ -126,119 +121,229 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     _configureAmplify();
+    _hasUserLoggedIn();
   }
+
+  bool loginStateCheckInProgress = true;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: GestureDetector(
-            onTap: () {
-              FocusScope.of(context).requestFocus(new FocusNode());
-            },
-            child: Container(
-              color: Colors.lightGreen,
-              child: Column(
-                children: [
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.3,
-                    child: CircleAvatar(
-                      radius: 100,
-                      backgroundImage: NetworkImage(
-                          'https://yt3.ggpht.com/ytc/AAUvwnh90LNf2_wRdm3PPbWtSL7I-h0jOIV0D9P7lqF7=s88-c-k-c0x00ffffff-no-rj'),
-                    ),
-                  ),
-                  Container(
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 40, right: 40),
-                      child: TextField(
-                        autocorrect: false,
-                        enableSuggestions: false,
-                        style: TextStyle(color: Colors.white),
-                        controller: _emailController,
-                        decoration: InputDecoration(
-                          hintText: '请输入邮箱地址',
-                          hintStyle: TextStyle(color: Colors.white),
-                          enabledBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.white, width: 1.0)),
-                          focusedBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.white, width: 1.0)),
-                          prefixIcon: const Icon(
-                            Icons.email,
-                            color: Colors.white,
+    return loginStateCheckInProgress
+        ? Container()
+        : Scaffold(
+            body: GestureDetector(
+                onTap: () {
+                  FocusScope.of(context).requestFocus(new FocusNode());
+                },
+                child: Container(
+                  color: Colors.lightGreen,
+                  child: Column(
+                    children: [
+                      Container(
+                        height: MediaQuery.of(context).size.height * 0.3,
+                        child: CircleAvatar(
+                          radius: 100,
+                          backgroundImage: NetworkImage(
+                              'https://yt3.ggpht.com/ytc/AAUvwnh90LNf2_wRdm3PPbWtSL7I-h0jOIV0D9P7lqF7=s88-c-k-c0x00ffffff-no-rj'),
+                        ),
+                      ),
+                      Container(
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 40, right: 40),
+                          child: TextField(
+                            autofocus: true,
+                            autocorrect: false,
+                            enableSuggestions: false,
+                            style: TextStyle(color: Colors.white),
+                            controller: _emailController,
+                            decoration: InputDecoration(
+                              hintText: '请输入您的邮箱地址',
+                              hintStyle: TextStyle(color: Colors.white),
+                              enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.white, width: 1.0)),
+                              focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.white, width: 1.0)),
+                              prefixIcon: const Icon(
+                                Icons.email,
+                                color: Colors.white,
+                              ),
+                            ),
+                            obscureText: false,
                           ),
                         ),
-                        obscureText: false,
                       ),
-                    ),
-                  ),
-                  Container(
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 40, right: 40),
-                      child: TextField(
-                        autocorrect: false,
-                        enableSuggestions: false,
-                        style: TextStyle(color: Colors.white),
-                        controller: _passwordController,
-                        decoration: InputDecoration(
-                          hintText: '请输入登陆密码',
-                          hintStyle: TextStyle(color: Colors.white),
-                          enabledBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.white, width: 1.0)),
-                          focusedBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.white, width: 1.0)),
-                          prefixIcon: const Icon(
-                            Icons.lock,
-                            color: Colors.white,
+                      Container(
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 40, right: 40),
+                          child: TextField(
+                            autocorrect: false,
+                            enableSuggestions: false,
+                            style: TextStyle(color: Colors.white),
+                            controller: _passwordController,
+                            decoration: InputDecoration(
+                              hintText: '请输入您的超级密码',
+                              hintStyle: TextStyle(color: Colors.white),
+                              enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.white, width: 1.0)),
+                              focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.white, width: 1.0)),
+                              prefixIcon: const Icon(
+                                Icons.lock,
+                                color: Colors.white,
+                              ),
+                            ),
+                            obscureText: true,
                           ),
                         ),
-                        obscureText: true,
                       ),
-                    ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          waitingForVeriCode
+                              ? Container(
+                                  margin: EdgeInsets.only(top: 30),
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.4,
+                                  child: TextField(
+                                    keyboardType: TextInputType.number,
+                                    cursorColor: Colors.white,
+                                    autocorrect: false,
+                                    enableSuggestions: false,
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20),
+                                    controller: _codeController,
+                                    textAlign: TextAlign.center,
+                                    decoration: InputDecoration(
+                                      hintText: '验证码',
+                                      hintStyle: TextStyle(
+                                          color: Colors.white, fontSize: 20),
+                                      border: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.white, width: 1.0)),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.white, width: 1.0)),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.white, width: 1.0)),
+                                    ),
+                                  ),
+                                )
+                              : Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.4,
+                                  padding: EdgeInsets.only(right: 5),
+                                  margin: EdgeInsets.only(top: 30),
+                                  child: RaisedButton(
+                                    padding: EdgeInsets.all(20),
+                                    onPressed: _loginClick,
+                                    color: Colors.white,
+                                    textColor: Colors.lightGreen,
+                                    child: Text(
+                                      '登录',
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.4,
+                            padding: EdgeInsets.only(left: 5),
+                            margin: EdgeInsets.only(top: 30),
+                            child: RaisedButton(
+                              padding: EdgeInsets.all(20),
+                              onPressed:
+                                  waitingForVeriCode ? _verifyCode : _signUp,
+                              color: Colors.white,
+                              textColor: Colors.lightGreen,
+                              child: Text(
+                                waitingForVeriCode ? '验证' : '注册',
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
                   ),
-                  Container(
-                    margin: EdgeInsets.only(top: 30),
-                    child: RaisedButton(
-                      padding: EdgeInsets.all(20),
-                      onPressed: _loginClick,
-                      color: Colors.white,
-                      textColor: Colors.lightGreen,
-                      child: Text(
-                        '开始涨涨涨！',
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            )));
+                )));
+  }
+
+  bool waitingForVeriCode = false;
+
+  void _verifyCode() async {
+    print('verifying code');
+    if (_codeController.text == "") {
+      _showAlertDialog(context, '得嘞', '信息缺失', '请输入邮箱中的验证码');
+      return;
+    }
+    try {
+      SignUpResult res = await Amplify.Auth.confirmSignUp(
+          username: _emailController.text,
+          confirmationCode: _codeController.text);
+      print('is sign up confirmed ? ${res.isSignUpComplete}');
+      _signIn();
+    } on AuthError catch (e) {
+      print(e);
+    }
+  }
+
+  void _signUp() async {
+    print('signing up');
+    if (_emailController.text == "" || _passwordController.text == "") {
+      _showAlertDialog(context, '中！', '信息缺失', '请输入邮箱和密码来进行注册');
+      return;
+    }
+    try {
+      Map<String, dynamic> userAttributes = {
+        "email": _emailController.text,
+        "phone_number": '+11111111',
+        // additional attributes as needed
+      };
+      SignUpResult res = await Amplify.Auth.signUp(
+          username: _emailController.text,
+          password: _passwordController.text,
+          options: CognitoSignUpOptions(userAttributes: userAttributes));
+      print('is sign up in progress ? ${res.isSignUpComplete}');
+      setState(() {
+        waitingForVeriCode = true;
+      });
+    } on AuthError catch (e) {
+      print(e);
+    }
   }
 
   void _loginClick() {
+    if (_emailController.text == "" || _passwordController.text == "") {
+      _showAlertDialog(context, '懂了', '信息缺失', '请输入邮箱和密码以登录');
+      return;
+    }
     _signIn();
   }
 
-  void _fetchUserInfo() async {
+  void _fetchUserInfo(String userId) async {
     if (MeitouConfig.containsConfig('user_name') &&
         MeitouConfig.containsConfig('coins')) {
       print('already has user info??/');
       return;
     }
-    final user_id = '198405c8-ca46-4818-ab51-5b612149d2d1';
     var url =
-        "https://usdeuu1gp5.execute-api.us-west-2.amazonaws.com/user/$user_id/info";
-    var response = await http.get(url);
+        "https://ben62z58pk.execute-api.us-west-2.amazonaws.com/user/$userId";
+    http.Response response = await http.get(url);
     if (response.statusCode == 200) {
-      var jsonResponse = convert.jsonDecode(response.body);
+      dynamic jsonResponse = convert.jsonDecode(response.body);
       // var itemCount = jsonResponse['totalItems'];
       // print('Number of books about http: $jsonResponse.');
       // print("${jsonResponse}");
-      MeitouConfig.setConfig('user_id', jsonResponse['userId']['S']);
-      MeitouConfig.setConfig('user_name', jsonResponse['user_name']['S']);
-      MeitouConfig.setConfig('coins', int.parse(jsonResponse['coins']['N']));
+      MeitouConfig.setConfig('user_id', jsonResponse['userId']);
+      MeitouConfig.setConfig('user_name', jsonResponse['user_name']);
+      MeitouConfig.setConfig('coins', int.parse(jsonResponse['coins']));
       print('user info fetched!');
     } else {
       print('Request failed with status: ${response.statusCode}.');

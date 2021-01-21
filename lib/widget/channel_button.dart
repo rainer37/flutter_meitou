@@ -9,7 +9,7 @@ class ChannelButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 4.0, right: 4),
+      padding: const EdgeInsets.only(left: 4.0, right: 4, bottom: 4),
       child: ListTile(
         dense: true,
         isThreeLine: false,

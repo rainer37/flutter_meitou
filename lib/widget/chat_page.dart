@@ -20,8 +20,9 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   void initState() {
-    super.initState();
+    print('chat page init');
     _fetchChannels();
+    super.initState();
   }
 
   void _fetchChannels() async {
@@ -50,21 +51,16 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget _buildChannelList(channels) {
     return Container(
+        height: MediaQuery.of(context).size.height * 0.33,
         margin: EdgeInsets.only(top: 10),
-        child: SizedBox(
-            height: 230,
-            child: ListView.separated(
-              separatorBuilder: (context, index) => Divider(
-                color: Colors.white,
-                height: 3,
-              ),
-              itemCount: channels.length,
-              itemBuilder: (context, index) {
-                return ChannelButton(
-                  channel: channels[index],
-                );
-              },
-            )));
+        child: ListView.builder(
+          itemCount: channels.length,
+          itemBuilder: (context, index) {
+            return ChannelButton(
+              channel: channels[index],
+            );
+          },
+        ));
   }
 
   @override
@@ -87,9 +83,11 @@ class _ChatPageState extends State<ChatPage> {
                   endIndent: 10,
                 ),
                 Padding(
-                    padding: EdgeInsets.only(top: 10, left: 10),
+                    padding: EdgeInsets.only(top: 10, left: 10, bottom: 10),
                     child: Text('我的频道')),
-                _buildChannelList(myChannels),
+                ChannelButton(
+                  channel: myChannels[0],
+                )
               ],
             )));
   }
