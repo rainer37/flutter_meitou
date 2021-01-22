@@ -2,8 +2,6 @@ import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_meitou/model/config.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert' as convert;
 
 import 'package:amplify_core/amplify_core.dart';
 
@@ -13,7 +11,9 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
-  var _userName = '';
+  var _userName = '',
+      _avatar =
+          'https://i1.sndcdn.com/avatars-000617335083-cmq67l-t500x500.jpg';
   var _coin = 0;
   final items = List<String>.generate(5, (i) => "Item $i");
 
@@ -29,32 +29,16 @@ class _UserProfileState extends State<UserProfile> {
 
   void _fetchUserInfo() async {
     if (MeitouConfig.containsConfig('user_name') &&
-        MeitouConfig.containsConfig('coins')) {
+        MeitouConfig.containsConfig('coins') &&
+        MeitouConfig.containsConfig('avatar_url')) {
       setState(() {
         _userName = MeitouConfig.getConfig('user_name');
         _coin = MeitouConfig.getConfig('coins');
+        _avatar = MeitouConfig.getConfig('avatar_url');
       });
       return;
-    }
-    final user_id = '198405c8-ca46-4818-ab51-5b612149d2d1';
-    var url =
-        "https://usdeuu1gp5.execute-api.us-west-2.amazonaws.com/user/$user_id/info";
-    var response = await http.get(url);
-    if (response.statusCode == 200) {
-      var jsonResponse = convert.jsonDecode(response.body);
-      // var itemCount = jsonResponse['totalItems'];
-      // print('Number of books about http: $jsonResponse.');
-      // print("${jsonResponse}");
-      MeitouConfig.setConfig('user_id', jsonResponse['userId']['S']);
-      MeitouConfig.setConfig('user_name', jsonResponse['user_name']['S']);
-      MeitouConfig.setConfig('coins', int.parse(jsonResponse['coins']['N']));
-
-      setState(() {
-        _userName = jsonResponse['user_name']['S'];
-        _coin = int.parse(jsonResponse['coins']['N']);
-      });
     } else {
-      print('Request failed with status: ${response.statusCode}.');
+      print('no logged in user detected!!!');
     }
   }
 
@@ -70,8 +54,7 @@ class _UserProfileState extends State<UserProfile> {
                   height: 150,
                   child: CircleAvatar(
                     radius: 150,
-                    backgroundImage: NetworkImage(
-                        'https://cdn.dribbble.com/users/3641854/screenshots/8201011/shot-cropped-1573712443265.png?compress=1&resize=400x300'),
+                    backgroundImage: NetworkImage(_avatar),
                   )),
               Container(
                 width: 200,

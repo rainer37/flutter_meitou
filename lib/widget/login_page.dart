@@ -333,8 +333,8 @@ class _LoginPageState extends State<LoginPage> {
       print('already has user info??/');
       return;
     }
-    var url =
-        "https://ben62z58pk.execute-api.us-west-2.amazonaws.com/user/$userId";
+    print('fetching user info $userId');
+    var url = "${MeitouConfig.getConfig('restEndpointUrl')}/user/$userId";
     http.Response response = await http.get(url);
     if (response.statusCode == 200) {
       dynamic jsonResponse = convert.jsonDecode(response.body);
@@ -343,10 +343,12 @@ class _LoginPageState extends State<LoginPage> {
       // print("${jsonResponse}");
       MeitouConfig.setConfig('user_id', jsonResponse['user_id']);
       MeitouConfig.setConfig('user_name', jsonResponse['user_name']);
+      MeitouConfig.setConfig('avatar_url', jsonResponse['avatar_url']);
       MeitouConfig.setConfig('coins', int.parse(jsonResponse['coins']));
       print('user info fetched!');
     } else {
-      print('Request failed with status: ${response.statusCode}.');
+      print(
+          'Request failed while fetching user info with status: ${response.statusCode}.');
     }
   }
 }

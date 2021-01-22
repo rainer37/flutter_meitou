@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_meitou/model/message_warlock.dart';
@@ -47,12 +46,8 @@ class _ChatBoardState extends State<ChatBoard> {
     var response = await http.get(url);
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
-      // print(jsonResponse);
 
-      // var itemCount = jsonResponse['totalItems'];
-      // print('Number of books about http: $jsonResponse.');
       // print("${jsonResponse}");
-      // messages.clear();
       setState(() {
         for (var msg in jsonResponse) {
           MessageWarlock.summon().addMessageToChannel(

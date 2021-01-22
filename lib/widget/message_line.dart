@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_meitou/model/config.dart';
 import 'package:flutter_meitou/model/message.dart';
 import 'package:flutter_meitou/model/user.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
+
+const defaultAvatarUrl =
+    'https://i1.sndcdn.com/avatars-000617335083-cmq67l-t500x500.jpg';
 
 class MessageLine extends StatefulWidget {
   final Message msg;
@@ -14,6 +19,51 @@ class MessageLine extends StatefulWidget {
 
 class _MessageLineState extends State<MessageLine> {
   User sender;
+
+  @override
+  void initState() {
+    super.initState();
+    if (!MeitouConfig.containsConfig('USER#${widget.msg.senderId}')) {
+      if (sender == null) {
+        // no local cache
+        if (!MeitouConfig.containsConfig(
+            'USER_FETCHING#${widget.msg.senderId}')) {
+          _fetchUserInfo(widget.msg.senderId);
+        }
+      }
+      sender = User('0', '神秘股民', '', defaultAvatarUrl, 0);
+    } else {
+      sender = MeitouConfig.getConfig('USER#${widget.msg.senderId}');
+    }
+  }
+
+  void _fetchUserInfo(senderId) async {
+    MeitouConfig.setConfig('USER_FETCHING#$senderId', 0);
+    print('fetching user id $senderId');
+    var url = "${MeitouConfig.getConfig('restEndpointUrl')}/user/$senderId";
+    http.Response response = await http.get(url);
+    if (response.statusCode == 200) {
+      dynamic jsonResponse = convert.jsonDecode(response.body);
+      // print("got user ${jsonResponse}");
+      // print('sender info fetched!');
+
+      String avatarUrl = jsonResponse['avatar_url'] == null
+          ? defaultAvatarUrl
+          : jsonResponse['avatar_url'];
+
+      User user = User(jsonResponse['user_id'], jsonResponse['user_name'],
+          jsonResponse['email'], avatarUrl, int.parse(jsonResponse['coins']));
+      MeitouConfig.setConfig('USER#${jsonResponse['user_id']}', user);
+
+      setState(() {
+        sender = user;
+      });
+    } else {
+      print(
+          'Request failed with while fetching sender info status: ${response.statusCode}.');
+    }
+    MeitouConfig.removeConfig('USER_FETCHING#$senderId');
+  }
 
   Row _buildHashTagRow() {
     List<String> hashTags = widget.msg.hashtags.split(',');
@@ -40,9 +90,6 @@ class _MessageLineState extends State<MessageLine> {
 
   @override
   Widget build(BuildContext context) {
-    if (sender == null) {
-      sender = MeitouConfig.getConfig('USER#${widget.msg.senderId}');
-    }
     return Container(
       padding: EdgeInsets.only(bottom: 10, top: 10, left: 10, right: 20),
       child: Row(

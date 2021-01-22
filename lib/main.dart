@@ -16,30 +16,6 @@ class MyApp extends StatelessWidget {
         'wss://4f6y995d0d.execute-api.us-west-2.amazonaws.com/dev');
     MeitouConfig.setConfig('restEndpointUrl',
         'https://ben62z58pk.execute-api.us-west-2.amazonaws.com');
-    MeitouConfig.setConfig(
-        'USER#u-0-0-1',
-        User(
-            'u-0-0-1',
-            'UserOne',
-            'userone@gmail.com',
-            'https://techcrunch.com/wp-content/uploads/2018/07/logo-2.png',
-            99));
-    MeitouConfig.setConfig(
-        'USER#204083d4-5c3c-4039-b7f9-5f2a5358a4c3',
-        User(
-            '204083d4-5c3c-4039-b7f9-5f2a5358a4c3',
-            '匿名股神',
-            'rainer.1993@hotmail.com',
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Oauth_logo.svg/180px-Oauth_logo.svg.png',
-            50));
-    MeitouConfig.setConfig(
-        'USER#198405c8-ca46-4818-ab51-5b612149d2d1',
-        User(
-            '198405c8-ca46-4818-ab51-5b612149d2d1',
-            'rainergu37',
-            'rainergu37@hotmail.com',
-            'https://cdn.dribbble.com/users/3641854/screenshots/8201011/shot-cropped-1573712443265.png?compress=1&resize=400x300',
-            50));
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Welcome to MeiTou',

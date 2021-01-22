@@ -32,11 +32,7 @@ class _ChatPageState extends State<ChatPage> {
     var response = await http.get(url);
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
-      // print(jsonResponse);
 
-      // var itemCount = jsonResponse['totalItems'];
-      // print('Number of books about http: $jsonResponse.');
-      // print("${jsonResponse['user_name']['S']}");
       setState(() {
         for (var ch in jsonResponse) {
           hotChannels.add(Channel(ch['channel_id'], ch['channel_name'],
@@ -45,7 +41,8 @@ class _ChatPageState extends State<ChatPage> {
         MeitouConfig.setConfig('channelFetched', true);
       });
     } else {
-      print('Request failed with status: ${response.statusCode}.');
+      print(
+          'Request failed while fetching channels with status: ${response.statusCode}.');
     }
   }
 
