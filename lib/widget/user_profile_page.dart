@@ -16,7 +16,6 @@ class UserProfile extends StatefulWidget {
 class _UserProfileState extends State<UserProfile> {
   var _userName = '', _avatar = defaultAvatarUrl;
   var _coin = 0;
-  final items = List<String>.generate(5, (i) => "Item $i");
 
   @override
   void initState() {
@@ -48,50 +47,70 @@ class _UserProfileState extends State<UserProfile> {
 
   Widget _buildUserInfo() {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.3,
-      child: Padding(
-          padding: EdgeInsets.only(left: 20, top: 20, bottom: 5),
-          child: Row(
-            children: <Widget>[
-              Container(
-                  width: 150,
-                  height: 150,
-                  child: CircleAvatar(
-                    radius: 150,
-                    backgroundImage: NetworkImage(_avatar),
-                  )),
-              Container(
-                width: 200,
-                height: 150,
-                margin: EdgeInsets.only(left: 20),
-                child: Padding(
-                    padding: EdgeInsets.only(top: 10),
+      height: MediaQuery.of(context).size.height * 0.15 + 20,
+      padding: EdgeInsets.all(10),
+      child: Column(
+        children: [
+          Container(
+              height: MediaQuery.of(context).size.height * 0.15,
+              child: Row(
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.3,
+                    child: CircleAvatar(
+                      radius: MediaQuery.of(context).size.height * 0.15,
+                      backgroundImage: NetworkImage(_avatar),
+                    ),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.7 - 20,
+                    padding: EdgeInsets.only(left: 20),
                     child: Column(
-                      children: <Widget>[
-                        Text(
-                          "$_userName",
-                          style: TextStyle(
-                            fontSize: 35,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text('美投币',
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.only(top: 10, bottom: 5),
+                          child: Text(
+                            "$_userName",
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
-                            )),
-                        Text(
-                          '$_coin',
-                          style: TextStyle(
-                            fontSize: 50,
-                            fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          decoration: new BoxDecoration(
+                              color: Colors.lightGreen,
+                              borderRadius:
+                                  new BorderRadius.all(Radius.circular(10.0))),
+                          padding: EdgeInsets.all(5),
+                          child: Text(
+                            "初级股民",
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFFf4ebc1)),
+                          ),
+                        ),
+                        Container(
+                          child: Text(
+                            '美投币 $_coin',
+                            style: TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         )
                       ],
-                    )),
-              )
-            ],
-          )),
+                    ),
+                  ),
+                ],
+              )),
+          Container(
+            color: Colors.blue,
+          ),
+        ],
+      ),
     );
   }
 
@@ -104,14 +123,14 @@ class _UserProfileState extends State<UserProfile> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildUserInfo(),
+                Divider(),
                 Padding(
-                    padding: EdgeInsets.only(top: 10, left: 10),
-                    child: Text('我的订阅频道们')),
+                    padding: EdgeInsets.only(left: 10), child: Text('我的订阅频道们')),
                 _buildSubscriptionList(),
                 Container(
-                  height: 140,
+                  height: 150,
                   width: double.infinity,
-                  margin: EdgeInsets.only(top: 30),
+                  margin: EdgeInsets.only(top: 70),
                   child: RaisedButton(
                     padding: EdgeInsets.all(20),
                     onPressed: _logOut,
@@ -142,34 +161,32 @@ class _UserProfileState extends State<UserProfile> {
     }
   }
 
+  List<String> myChannels = [
+    '## 某一个神奇的频道 \$5/month',
+    '## 成功人士会所 \$100/month',
+    '## NetFlex网非 \$12/month'
+  ];
+
   Widget _buildSubscriptionList() {
     return Container(
-        height: MediaQuery.of(context).size.height * 0.2,
+        // height: MediaQuery.of(context).size.height * 0.2,
         margin: EdgeInsets.only(top: 10),
         child: SizedBox(
-            height: 150,
+            height: MediaQuery.of(context).size.height * 0.2,
             child: ListView.builder(
-              itemCount: 3,
-              itemExtent: 40,
+              itemCount: myChannels.length,
               itemBuilder: (context, index) {
                 return Container(
-                  margin: EdgeInsets.all(5),
-                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  padding: EdgeInsets.symmetric(vertical: 15),
+                  color: Colors.lightGreen,
+                  margin: EdgeInsets.all(1),
+                  child: Row(children: [
                     Padding(
                         padding: EdgeInsets.only(left: 10, right: 5),
                         child: Text(
-                          '## 某一个神奇的频道 \$5 per month',
-                          textScaleFactor: 1.2,
+                          myChannels[index],
                         )),
-                    Icon(Icons.album_outlined, color: Colors.yellow),
                   ]),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.lightGreen,
-                    boxShadow: [
-                      BoxShadow(color: Color(0xFFf4ebc1), spreadRadius: 3),
-                    ],
-                  ),
                 );
               },
             )));

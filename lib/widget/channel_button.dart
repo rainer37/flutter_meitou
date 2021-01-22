@@ -16,11 +16,26 @@ class ChannelButton extends StatelessWidget {
         isThreeLine: false,
         contentPadding: EdgeInsets.only(top: 0, left: 10, right: 10, bottom: 0),
         tileColor: Colors.lightGreen,
-        title: Text(
-          "## ${channel.name}${channel.subbed ? '' : ' (💰${channel.subscriptionFee})'}",
-          style: TextStyle(
-            fontSize: 15,
-          ),
+        title: Row(
+          children: [
+            Text(
+              "## ${channel.name}",
+              style: TextStyle(
+                fontSize: 15,
+              ),
+            ),
+            Container(
+              width: 10,
+            ),
+            RawChip(
+              backgroundColor: Colors.green,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              label: Text(
+                "${channel.subbed ? '💰30000' : '💰${channel.subscriptionFee}'}",
+                style: TextStyle(fontSize: 15, color: Colors.yellow[600]),
+              ),
+            )
+          ],
         ),
         subtitle: Text(
           channel.desc,

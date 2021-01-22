@@ -88,6 +88,19 @@ class _MessageLineState extends State<MessageLine> {
     }));
   }
 
+  Widget _buildMessageAction(String actionName) {
+    return Expanded(
+        flex: 1,
+        child: FlatButton(
+            child: Text(
+          actionName,
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              color: Color(0xFFf4ebc1)),
+        )));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -115,46 +128,22 @@ class _MessageLineState extends State<MessageLine> {
                     showModalBottomSheet(
                         context: context,
                         builder: (BuildContext context) {
-                          return Container(
-                            height: MediaQuery.of(context).size.height * 0.3,
+                          return SafeArea(
+                              child: Container(
+                            height: MediaQuery.of(context).size.height * 0.35,
                             color: Colors.lightGreen,
                             child: Column(
                               children: [
-                                Expanded(
-                                    flex: 1,
-                                    child: FlatButton(
-                                        child: Text(
-                                      '打赏',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20,
-                                          color: Color(0xFFf4ebc1)),
-                                    ))),
+                                _buildMessageAction('打赏'),
                                 Divider(),
-                                Expanded(
-                                    flex: 1,
-                                    child: FlatButton(
-                                        child: Text(
-                                      '我看行!!!',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20,
-                                          color: Color(0xFFf4ebc1)),
-                                    ))),
+                                _buildMessageAction('我看行!!!'),
                                 Divider(),
-                                Expanded(
-                                    flex: 1,
-                                    child: FlatButton(
-                                        child: Text(
-                                      '不懂???',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20,
-                                          color: Color(0xFFf4ebc1)),
-                                    )))
+                                _buildMessageAction('不懂???'),
+                                Divider(),
+                                _buildMessageAction('什么玩意?!'),
                               ],
                             ),
-                          );
+                          ));
                         });
                   },
                   child: Column(
@@ -230,7 +219,7 @@ class _MessageLineState extends State<MessageLine> {
                   height: 36,
                 ),
                 SizedBox(
-                    height: MediaQuery.of(context).size.width * 0.3,
+                    height: MediaQuery.of(context).size.width * 0.45,
                     child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.only(
@@ -244,7 +233,7 @@ class _MessageLineState extends State<MessageLine> {
                           overflow: Overflow.visible,
                           children: <Widget>[
                             Positioned(
-                              top: -36,
+                              top: -56,
                               child: Container(
                                 decoration: BoxDecoration(
                                     borderRadius:
@@ -289,13 +278,24 @@ class _MessageLineState extends State<MessageLine> {
                                     ),
                                     onTap: () {},
                                   ),
+                                  ListTile(
+                                    title: Text(
+                                      '${sender.email}',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    leading: Icon(
+                                      Icons.mail,
+                                      color: Colors.white,
+                                    ),
+                                    onTap: () {},
+                                  ),
                                 ],
                               ),
                             )
                           ],
                         ))),
                 Container(
-                  height: 36,
+                  height: 16,
                   color: Colors.green,
                 )
               ],
