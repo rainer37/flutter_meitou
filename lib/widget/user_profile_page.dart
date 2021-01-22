@@ -5,15 +5,16 @@ import 'package:flutter_meitou/model/config.dart';
 
 import 'package:amplify_core/amplify_core.dart';
 
+const defaultAvatarUrl =
+    'https://i1.sndcdn.com/avatars-000617335083-cmq67l-t500x500.jpg';
+
 class UserProfile extends StatefulWidget {
   @override
   _UserProfileState createState() => _UserProfileState();
 }
 
 class _UserProfileState extends State<UserProfile> {
-  var _userName = '',
-      _avatar =
-          'https://i1.sndcdn.com/avatars-000617335083-cmq67l-t500x500.jpg';
+  var _userName = '', _avatar = defaultAvatarUrl;
   var _coin = 0;
   final items = List<String>.generate(5, (i) => "Item $i");
 
@@ -34,11 +35,14 @@ class _UserProfileState extends State<UserProfile> {
       setState(() {
         _userName = MeitouConfig.getConfig('user_name');
         _coin = MeitouConfig.getConfig('coins');
-        _avatar = MeitouConfig.getConfig('avatar_url');
+        _avatar = MeitouConfig.getConfig('avatar_url') == ''
+            ? defaultAvatarUrl
+            : MeitouConfig.getConfig('avatar_url');
       });
       return;
     } else {
       print('no logged in user detected!!!');
+      _logOut();
     }
   }
 
@@ -124,10 +128,11 @@ class _UserProfileState extends State<UserProfile> {
             )));
   }
 
-  void _logOut() {
+  void _logOut() async {
     print('logging out');
     try {
-      Amplify.Auth.signOut();
+      await Amplify.Auth.signOut();
+      Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
     } on AuthError catch (e) {
       print(e);
     }
