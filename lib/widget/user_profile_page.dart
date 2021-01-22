@@ -130,7 +130,7 @@ class _UserProfileState extends State<UserProfile> {
                 Container(
                   height: 150,
                   width: double.infinity,
-                  margin: EdgeInsets.only(top: 70),
+                  margin: EdgeInsets.only(top: 50),
                   child: RaisedButton(
                     padding: EdgeInsets.all(20),
                     onPressed: _logOut,
@@ -172,7 +172,7 @@ class _UserProfileState extends State<UserProfile> {
         // height: MediaQuery.of(context).size.height * 0.2,
         margin: EdgeInsets.only(top: 10),
         child: SizedBox(
-            height: MediaQuery.of(context).size.height * 0.2,
+            height: MediaQuery.of(context).size.height * 0.25,
             child: ListView.builder(
               itemCount: myChannels.length,
               itemBuilder: (context, index) {

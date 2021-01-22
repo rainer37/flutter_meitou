@@ -20,6 +20,13 @@ class MessageWarlock {
     return messageBook.keys;
   }
 
+  void cleanse(String channelId) {
+    for (String tag in releaseTheRageOfTags(channelId)) {
+      messageBook.remove('$channelId#tag#$tag');
+    }
+    messageBook.remove(channelId);
+  }
+
   void addMessageToChannel(String channelId, Message msg) {
     if (messageBook[channelId] == null)
       messageBook[channelId] = new SplayTreeSet();
@@ -46,7 +53,18 @@ class MessageWarlock {
         : messageBook['$channelId#tag#$tag'].toList();
   }
 
+  void polluteChannel(String channelId) {
+    messageBook['$channelId#dirty'] = null;
+    print('polluted ? ${messageBook.containsKey('$channelId#dirty')}');
+  }
+
+  void rinseChannel(String channelId) {
+    messageBook.remove('$channelId#dirty');
+    print('still polluted ? ${messageBook.containsKey('$channelId#dirty')}');
+  }
+
   String lastSeenInChannel(String channelId) {
+    if (messageBook.containsKey('$channelId#dirty')) return '0';
     return messageBook[channelId] == null
         ? '0'
         : messageBook[channelId].last.lastUpdatedAt;

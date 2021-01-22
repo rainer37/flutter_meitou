@@ -38,11 +38,12 @@ class _ChatBoardState extends State<ChatBoard> {
   }
 
   void _fetchChatHistory() async {
+    String channelId = widget.channel.id;
     print('fetching chat history');
     String lastMessageSeen =
-        MessageWarlock.summon().lastSeenInChannel(widget.channel.id);
+        MessageWarlock.summon().lastSeenInChannel(channelId);
     var url =
-        "https://ben62z58pk.execute-api.us-west-2.amazonaws.com/chats/${widget.channel.id}/$lastMessageSeen";
+        "${MeitouConfig.getConfig('restEndpointUrl')}/chats/${channelId}/$lastMessageSeen";
     var response = await http.get(url);
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
@@ -51,9 +52,10 @@ class _ChatBoardState extends State<ChatBoard> {
       setState(() {
         for (var msg in jsonResponse) {
           MessageWarlock.summon().addMessageToChannel(
-              widget.channel.id,
+              channelId,
               Message(msg['channel_id'], msg['sender_id'], msg['content'],
                   msg['hashtags'], msg['last_updated_at']));
+          MessageWarlock.summon().rinseChannel(channelId);
         }
         // MeitouConfig.setConfig('channelFetched', true);
       });
@@ -172,6 +174,7 @@ class _ChatBoardState extends State<ChatBoard> {
                               children: <Widget>[
                                 new Wrap(
                                   spacing: 2.0,
+                                  runSpacing: 5,
                                   direction: Axis.horizontal,
                                   children: _buildHashTagChips(),
                                 )
@@ -401,11 +404,21 @@ class _ChatBoardState extends State<ChatBoard> {
 
   Widget _buildChip(String text, Color color) {
     return ActionChip(
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       label: new Text(text),
       backgroundColor: color,
       onPressed: () {
-        print(MessageWarlock.summon()
-            .summonTaggedMessages(widget.channel.id, text));
+        List<Message> taggedMessages = MessageWarlock.summon()
+            .summonTaggedMessages(widget.channel.id, text);
+        print(taggedMessages);
+        MessageWarlock.summon().cleanse(widget.channel.id);
+        MessageWarlock.summon().polluteChannel(widget.channel.id);
+        setState(() {
+          for (Message msg in taggedMessages) {
+            MessageWarlock.summon().addMessageToChannel(widget.channel.id, msg);
+          }
+        });
+        Navigator.pop(context);
       },
     );
   }
