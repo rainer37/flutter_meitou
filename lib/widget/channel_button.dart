@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_meitou/model/channel.dart';
 import 'package:flutter_meitou/widget/chat_board.dart';
+import 'package:vibration/vibration.dart';
 
 class ChannelButton extends StatelessWidget {
   final Channel channel;
@@ -28,8 +29,15 @@ class ChannelButton extends StatelessWidget {
             color: Colors.blueGrey,
           ),
         ),
-        onTap: () {
+        onTap: () async {
           print('clicking on ' + channel.name);
+          if (channel.id.startsWith('rpc')) {
+            if (await Vibration.hasVibrator()) {
+              Vibration.vibrate();
+            }
+            print('private chan cannot go in!');
+            return;
+          }
           Navigator.of(context)
               .push(MaterialPageRoute<void>(builder: (BuildContext context) {
             return ChatBoard(channel);

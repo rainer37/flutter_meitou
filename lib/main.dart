@@ -68,7 +68,7 @@ class _RandomWordsState extends State<RandomWords> {
     );
     appbars[0] = AppBar(
       elevation: 0,
-      title: Text('话题频道'),
+      title: Text('来看看大家都在聊个啥'),
       actions: [IconButton(icon: Icon(Icons.add), onPressed: _addChannel)],
     );
     appbars[1] = mainAppBar;
