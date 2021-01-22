@@ -133,6 +133,10 @@ class _UserProfileState extends State<UserProfile> {
     try {
       await Amplify.Auth.signOut();
       Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+      MeitouConfig.removeConfig('user_name');
+      MeitouConfig.removeConfig('user_id');
+      MeitouConfig.removeConfig('avatar_url');
+      MeitouConfig.removeConfig('coins');
     } on AuthError catch (e) {
       print(e);
     }
