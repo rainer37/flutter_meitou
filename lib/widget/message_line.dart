@@ -66,7 +66,7 @@ class _MessageLineState extends State<MessageLine> {
     MeitouConfig.removeConfig('USER_FETCHING#$senderId');
   }
 
-  Row _buildHashTagRow() {
+  Widget _buildHashTagRow() {
     List<String> hashTags = widget.msg.hashtags.split(',');
     return Row(
         children: List<Widget>.generate(hashTags.length, (int index) {
@@ -94,8 +94,12 @@ class _MessageLineState extends State<MessageLine> {
         flex: 1,
         child: FlatButton(
             onPressed: () {
-              MessageWarlock.summon()
+              Message target = MessageWarlock.summon()
                   .morphMessage(widget.msg.channelId, widget.msg);
+              setState(() {
+                // update action icon
+                widget.msg.likes = target.likes;
+              });
             },
             child: Text(
               actionName,
@@ -147,7 +151,7 @@ class _MessageLineState extends State<MessageLine> {
                                   Divider(),
                                   _buildMessageAction('不懂???'),
                                   Divider(),
-                                  _buildMessageAction('什么玩意?!'),
+                                  _buildMessageAction('什么玩意儿?!'),
                                 ],
                               ),
                             )),
@@ -190,15 +194,22 @@ class _MessageLineState extends State<MessageLine> {
                               color: Colors.lightGreen,
                             ),
                             child: Text(
-                              widget.msg.content,
+                              widget.msg.content +
+                                  (widget.msg.likes == 0
+                                      ? ''
+                                      : '🖤${widget.msg.likes}'),
                               style:
                                   TextStyle(color: Colors.black, fontSize: 15),
                             ),
                           ),
                         ),
-                        Padding(
-                            padding: EdgeInsets.only(top: 3, left: 15),
-                            child: _buildHashTagRow())
+                        Row(
+                          children: [
+                            Padding(
+                                padding: EdgeInsets.only(top: 3, left: 15),
+                                child: _buildHashTagRow()),
+                          ],
+                        )
                       ])),
               flex: 5),
           Expanded(flex: 1, child: Container())

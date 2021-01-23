@@ -2,8 +2,10 @@ import 'dart:convert';
 
 class Message extends Comparable {
   String channelId, senderId, content, hashtags, lastUpdatedAt;
+  int likes;
   Message(this.channelId, this.senderId, this.content, this.hashtags,
-      this.lastUpdatedAt);
+      this.lastUpdatedAt,
+      {this.likes = 0});
 
   String toJSON() {
     return json.encode({
@@ -13,6 +15,7 @@ class Message extends Comparable {
       'content': this.content,
       'hashtags': this.hashtags,
       'last_updated_at': this.lastUpdatedAt,
+      'likes': this.likes,
     });
   }
 
