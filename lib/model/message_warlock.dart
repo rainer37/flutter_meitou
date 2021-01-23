@@ -20,6 +20,11 @@ class MessageWarlock {
     return messageBook.keys;
   }
 
+  void morphMessage(String channelId, Message msg) {
+    Message morph = messageBook[channelId].lookup(msg);
+    print('found message $morph');
+  }
+
   void cleanse(String channelId) {
     for (String tag in releaseTheRageOfTags(channelId)) {
       messageBook.remove('$channelId#tag#$tag');

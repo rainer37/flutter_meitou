@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter_meitou/model/config.dart';
+import 'package:flutter_meitou/widget/EduPage.dart';
 import 'package:flutter_meitou/widget/chat_page.dart';
 import 'package:flutter_meitou/widget/login_page.dart';
 import 'package:flutter_meitou/widget/user_profile_page.dart';
-
-import 'model/user.dart';
 
 void main() => runApp(MyApp());
 
@@ -48,7 +47,7 @@ class _RandomWordsState extends State<RandomWords> {
   final _saved = Set<WordPair>();
   final _biggerFont = TextStyle(fontSize: 18.0);
   var _index = 0;
-  final List<Widget> children = [ChatPage(), Placeholder(), UserProfile()];
+  final List<Widget> children = [ChatPage(), EduPage(), UserProfile()];
 
   final List<Widget> appbars = [
     Placeholder(),
@@ -59,7 +58,6 @@ class _RandomWordsState extends State<RandomWords> {
   @override
   void initState() {
     super.initState();
-    // children[0] = LoginPage();
 
     final mainAppBar = AppBar(
       elevation: 0,
@@ -69,13 +67,18 @@ class _RandomWordsState extends State<RandomWords> {
     appbars[0] = AppBar(
       elevation: 0,
       title: Text('来看看大家都在聊个啥'),
-      actions: [IconButton(icon: Icon(Icons.add), onPressed: _addChannel)],
+      actions: [
+        IconButton(icon: Icon(Icons.add_circle), onPressed: _addChannel)
+      ],
     );
-    appbars[1] = mainAppBar;
+    appbars[1] = AppBar(
+      elevation: 0,
+      title: Text('美投君的精选视频'),
+    );
     appbars[2] = AppBar(
       elevation: 0,
       title: Text('我的信息'),
-      actions: [IconButton(icon: Icon(Icons.add), onPressed: _moreOnMe)],
+      actions: [IconButton(icon: Icon(Icons.settings), onPressed: _moreOnMe)],
     );
   }
 
@@ -85,9 +88,9 @@ class _RandomWordsState extends State<RandomWords> {
       return Scaffold(
           appBar: AppBar(
             elevation: 0,
-            title: Text('我的其他骚操作'),
+            title: Center(child: Text('我的其他骚操作')),
           ),
-          body: Text('operational excellence'));
+          body: Center(child: Text('Operational Excellence')));
     }));
   }
 
@@ -99,7 +102,7 @@ class _RandomWordsState extends State<RandomWords> {
             elevation: 0,
             title: Text('开一个新的频道吧'),
           ),
-          body: Text('你有什么想说的'));
+          body: Center(child: Text('你有什么想说的')));
     }));
   }
 

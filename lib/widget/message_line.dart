@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_meitou/model/config.dart';
 import 'package:flutter_meitou/model/message.dart';
+import 'package:flutter_meitou/model/message_warlock.dart';
 import 'package:flutter_meitou/model/user.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
@@ -92,13 +93,17 @@ class _MessageLineState extends State<MessageLine> {
     return Expanded(
         flex: 1,
         child: FlatButton(
+            onPressed: () {
+              MessageWarlock.summon()
+                  .morphMessage(widget.msg.channelId, widget.msg);
+            },
             child: Text(
-          actionName,
-          style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-              color: Color(0xFFf4ebc1)),
-        )));
+              actionName,
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: Color(0xFFf4ebc1)),
+            )));
   }
 
   @override
@@ -128,22 +133,25 @@ class _MessageLineState extends State<MessageLine> {
                     showModalBottomSheet(
                         context: context,
                         builder: (BuildContext context) {
-                          return SafeArea(
-                              child: Container(
-                            height: MediaQuery.of(context).size.height * 0.35,
+                          return Container(
                             color: Colors.lightGreen,
-                            child: Column(
-                              children: [
-                                _buildMessageAction('打赏'),
-                                Divider(),
-                                _buildMessageAction('我看行!!!'),
-                                Divider(),
-                                _buildMessageAction('不懂???'),
-                                Divider(),
-                                _buildMessageAction('什么玩意?!'),
-                              ],
-                            ),
-                          ));
+                            child: SafeArea(
+                                child: Container(
+                              height: MediaQuery.of(context).size.height * 0.35,
+                              color: Colors.lightGreen,
+                              child: Column(
+                                children: [
+                                  _buildMessageAction('打赏'),
+                                  Divider(),
+                                  _buildMessageAction('我看行!!!'),
+                                  Divider(),
+                                  _buildMessageAction('不懂???'),
+                                  Divider(),
+                                  _buildMessageAction('什么玩意?!'),
+                                ],
+                              ),
+                            )),
+                          );
                         });
                   },
                   child: Column(
