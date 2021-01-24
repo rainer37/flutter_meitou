@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_meitou/model/channel.dart';
 import 'package:flutter_meitou/widget/chat_board.dart';
 import 'package:vibration/vibration.dart';
@@ -53,6 +54,7 @@ class ChannelButton extends StatelessWidget {
             print('private chan cannot go in!');
             return;
           }
+          HapticFeedback.heavyImpact();
           Navigator.of(context)
               .push(MaterialPageRoute<void>(builder: (BuildContext context) {
             return ChatBoard(channel);

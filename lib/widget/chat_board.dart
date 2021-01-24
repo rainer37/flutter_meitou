@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_meitou/model/color_unicorn.dart';
 import 'package:flutter_meitou/model/message_warlock.dart';
 import 'package:flutter_meitou/model/channel.dart';
@@ -11,6 +12,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
 import 'package:image_picker/image_picker.dart';
+import 'package:vibration/vibration.dart';
 
 class ChatBoard extends StatefulWidget {
   final Channel channel;
@@ -374,13 +376,21 @@ class _ChatBoardState extends State<ChatBoard> {
 
   void _addTagToInput(tag) {
     print('adding tag');
-    this.setState(() {
-      if (_tagController.text == "")
+    this.setState(() async {
+      if (_tagController.text == "") {
+        HapticFeedback.lightImpact();
         _tagController.text += tag;
-      else {
+      } else {
         if (!_tagController.text.contains(',$tag') &&
             !_tagController.text.contains('$tag,') &&
-            _tagController.text != tag) _tagController.text += ',$tag';
+            _tagController.text != tag) {
+          HapticFeedback.lightImpact();
+          _tagController.text += ',$tag';
+        } else {
+          if (await Vibration.hasVibrator()) {
+            Vibration.vibrate();
+          }
+        }
       }
     });
   }

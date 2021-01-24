@@ -1,6 +1,7 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_meitou/model/color_unicorn.dart';
 import 'package:flutter_meitou/model/config.dart';
 
@@ -146,6 +147,7 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   void _logOut() async {
+    HapticFeedback.heavyImpact();
     print('logging out');
     try {
       await Amplify.Auth.signOut();

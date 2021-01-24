@@ -253,7 +253,7 @@ class _MessageLineState extends State<MessageLine> {
                               widget.msg.content +
                                   (widget.msg.likes == 0
                                       ? ''
-                                      : ' 🖤${widget.msg.likes}'),
+                                      : ' 🖤 ${widget.msg.likes}'),
                               style:
                                   TextStyle(color: Colors.black, fontSize: 15),
                             ),
