@@ -68,9 +68,9 @@ class _ChatBoardState extends State<ChatBoard> {
     }
   }
 
-  _onMessageCome(event) {
-    print(event);
-    Message msg = Message.fromJSON(event);
+  _onMessageCome(incomingMsg) {
+    print(incomingMsg);
+    Message msg = Message.fromJSON(incomingMsg);
     this.setState(() {
       MessageWarlock.summon().addMessageToChannel(widget.channel.id, msg);
       _needsScroll = true;
