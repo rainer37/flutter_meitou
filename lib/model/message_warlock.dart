@@ -20,10 +20,18 @@ class MessageWarlock {
     return messageBook.keys;
   }
 
-  Message morphMessage(String channelId, Message msg) {
+  Message morphMessage(String channelId, Message msg, String op) {
     Message morph = messageBook[channelId].lookup(msg);
     print('found message $morph');
-    morph.likes++;
+    switch (op) {
+      case 'like':
+        morph.likes++;
+        break;
+      case 'dislike':
+        break;
+      case 'tip':
+        break;
+    }
     return morph;
   }
 

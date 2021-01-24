@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_meitou/model/color_unicorn.dart';
 import 'package:flutter_meitou/model/config.dart';
 import 'package:flutter_meitou/model/message.dart';
 import 'package:flutter_meitou/model/message_warlock.dart';
@@ -90,19 +91,58 @@ class _MessageLineState extends State<MessageLine> {
     }));
   }
 
-  Widget _buildMessageAction(String actionName) {
+  void _actionLike() {
+    Message target = MessageWarlock.summon()
+        .morphMessage(widget.msg.channelId, widget.msg, 'like');
+    widget.likeMessage(target);
+    setState(() {
+      // update action icon
+      widget.msg.likes = target.likes;
+    });
+    Navigator.pop(context);
+  }
+
+  void _actionTip() async {
+    int amount = 1;
+    print('tipping message ${widget.msg}');
+    if (MeitouConfig.getConfig('coins') < amount) {
+      Navigator.pop(context);
+      _showAlertDialog(context, '好吧', '资金不足', '感谢你的好意，快去充美投币吧');
+      return;
+    }
+    var url = "${MeitouConfig.getConfig('restEndpointUrl')}/user/charge";
+
+    http.Response response = await http.post(url,
+        body: convert.jsonEncode(<String, String>{
+          'user_id': MeitouConfig.getConfig('user_id'),
+          'user_name': MeitouConfig.getConfig('user_name'),
+          'email': MeitouConfig.getConfig('email'),
+          'avatar_url': MeitouConfig.getConfig('avatar_url'),
+          'coins': (MeitouConfig.getConfig('coins') - 1).toString(),
+        }));
+    if (response.statusCode == 200) {
+      dynamic jsonResponse =
+          response.body; // convert.jsonDecode(response.body);
+      print("got resp on charge $jsonResponse");
+      // print('sender info fetched!');
+
+      setState(() {
+        MeitouConfig.setConfig('coins', MeitouConfig.getConfig('coins') - 1);
+      });
+    } else {
+      print(
+          'Request failed with while tipping message status: ${response.statusCode}.');
+    }
+    Navigator.pop(context);
+  }
+
+  void _actionDislike() {}
+
+  Widget _buildMessageAction(String actionName, Function actionFunc) {
     return Expanded(
         flex: 1,
         child: FlatButton(
-            onPressed: () {
-              Message target = MessageWarlock.summon()
-                  .morphMessage(widget.msg.channelId, widget.msg);
-              widget.likeMessage(target);
-              setState(() {
-                // update action icon
-                widget.msg.likes = target.likes;
-              });
-            },
+            onPressed: actionFunc,
             child: Text(
               actionName,
               style: TextStyle(
@@ -147,13 +187,14 @@ class _MessageLineState extends State<MessageLine> {
                               color: Colors.lightGreen,
                               child: Column(
                                 children: [
-                                  _buildMessageAction('打赏'),
+                                  _buildMessageAction('打赏', _actionTip),
                                   Divider(),
-                                  _buildMessageAction('我看行!!!'),
+                                  _buildMessageAction('我看行!!!', _actionLike),
                                   Divider(),
-                                  _buildMessageAction('不懂???'),
+                                  _buildMessageAction('不懂???', _actionLike),
                                   Divider(),
-                                  _buildMessageAction('什么玩意儿?!'),
+                                  _buildMessageAction(
+                                      '什么玩意儿?!', _actionDislike),
                                 ],
                               ),
                             )),
@@ -194,12 +235,14 @@ class _MessageLineState extends State<MessageLine> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               color: Colors.lightGreen,
+                              // border: Border.all(
+                              //     width: 2.0, color: Colors.amber)
                             ),
                             child: Text(
                               widget.msg.content +
                                   (widget.msg.likes == 0
                                       ? ''
-                                      : '🖤${widget.msg.likes}'),
+                                      : ' 🖤${widget.msg.likes}'),
                               style:
                                   TextStyle(color: Colors.black, fontSize: 15),
                             ),
@@ -280,33 +323,33 @@ class _MessageLineState extends State<MessageLine> {
                                   ListTile(
                                     title: Text(
                                       sender.name,
-                                      style: TextStyle(color: Colors.white),
+                                      style: TextStyle(color: kLightTextTitle),
                                     ),
                                     leading: Icon(
                                       Icons.account_circle,
-                                      color: Colors.white,
+                                      color: kLightIcon,
                                     ),
                                     onTap: () {},
                                   ),
                                   ListTile(
                                     title: Text(
                                       '${sender.coins}',
-                                      style: TextStyle(color: Colors.white),
+                                      style: TextStyle(color: kLightTextTitle),
                                     ),
                                     leading: Icon(
                                       Icons.money,
-                                      color: Colors.white,
+                                      color: kLightIcon,
                                     ),
                                     onTap: () {},
                                   ),
                                   ListTile(
                                     title: Text(
                                       '${sender.email}',
-                                      style: TextStyle(color: Colors.white),
+                                      style: TextStyle(color: kLightTextTitle),
                                     ),
                                     leading: Icon(
                                       Icons.mail,
-                                      color: Colors.white,
+                                      color: kLightTextTitle,
                                     ),
                                     onTap: () {},
                                   ),
@@ -323,5 +366,32 @@ class _MessageLineState extends State<MessageLine> {
             ),
           );
         });
+  }
+
+  void _showAlertDialog(BuildContext context, String action, title, content) {
+    // Create button
+    Widget okButton = FlatButton(
+      child: Text(action),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    // Create AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(title),
+      content: Text(content),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }

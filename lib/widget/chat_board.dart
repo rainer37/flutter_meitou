@@ -263,6 +263,8 @@ class _ChatBoardState extends State<ChatBoard> {
                                     backgroundColor: kHeavyBackground),
                                 decoration: InputDecoration(
                                     hintText: '想什么呢，跟我们说说吧',
+                                    hintStyle:
+                                        TextStyle(color: kLightTextTitle),
                                     suffixIcon: IconButton(
                                         icon: Icon(Icons.delete_forever),
                                         onPressed: () {
@@ -298,13 +300,15 @@ class _ChatBoardState extends State<ChatBoard> {
                                   controller: _tagController,
                                   decoration: InputDecoration(
                                       hintText: '加上标签吧，找起来更方便',
+                                      hintStyle:
+                                          TextStyle(color: kLightTextTitle),
                                       suffixIcon: IconButton(
                                           icon: Icon(Icons.delete_forever),
                                           onPressed: () {
                                             _tagController.clear();
                                           })),
                                   onFieldSubmitted: _updateTags,
-                                  style: TextStyle(fontSize: 10),
+                                  style: TextStyle(fontSize: 13),
                                 ))),
                         Container(
                           padding: EdgeInsets.only(right: 10, top: 5),

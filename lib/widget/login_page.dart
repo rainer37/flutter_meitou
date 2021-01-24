@@ -344,6 +344,7 @@ class _LoginPageState extends State<LoginPage> {
       // print("${jsonResponse}");
       MeitouConfig.setConfig('user_id', jsonResponse['user_id']);
       MeitouConfig.setConfig('user_name', jsonResponse['user_name']);
+      MeitouConfig.setConfig('email', jsonResponse['email']);
       MeitouConfig.setConfig('avatar_url', jsonResponse['avatar_url']);
       MeitouConfig.setConfig('coins', int.parse(jsonResponse['coins']));
       print('user info fetched!');
