@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_meitou/model/color_unicorn.dart';
 import 'package:flutter_meitou/model/config.dart';
 import 'package:flutter_meitou/model/message.dart';
@@ -92,6 +93,7 @@ class _MessageLineState extends State<MessageLine> {
   }
 
   void _actionLike() {
+    HapticFeedback.mediumImpact();
     Message target = MessageWarlock.summon()
         .morphMessage(widget.msg.channelId, widget.msg, 'like');
     widget.likeMessage(target);
@@ -103,6 +105,7 @@ class _MessageLineState extends State<MessageLine> {
   }
 
   void _actionTip() async {
+    HapticFeedback.lightImpact();
     int amount = 1;
     print('tipping message ${widget.msg}');
     if (MeitouConfig.getConfig('coins') < amount) {
@@ -142,6 +145,7 @@ class _MessageLineState extends State<MessageLine> {
     return Expanded(
         flex: 1,
         child: FlatButton(
+            minWidth: double.infinity,
             onPressed: actionFunc,
             child: Text(
               actionName,
@@ -176,6 +180,7 @@ class _MessageLineState extends State<MessageLine> {
               child: GestureDetector(
                   onLongPress: () {
                     print('long pressing message');
+                    HapticFeedback.heavyImpact();
                     showModalBottomSheet(
                         context: context,
                         builder: (BuildContext context) {
@@ -188,11 +193,17 @@ class _MessageLineState extends State<MessageLine> {
                               child: Column(
                                 children: [
                                   _buildMessageAction('打赏', _actionTip),
-                                  Divider(),
+                                  Divider(
+                                    height: 1,
+                                  ),
                                   _buildMessageAction('我看行!!!', _actionLike),
-                                  Divider(),
+                                  Divider(
+                                    height: 1,
+                                  ),
                                   _buildMessageAction('不懂???', _actionLike),
-                                  Divider(),
+                                  Divider(
+                                    height: 1,
+                                  ),
                                   _buildMessageAction(
                                       '什么玩意儿?!', _actionDislike),
                                 ],
