@@ -42,6 +42,7 @@ class MessageWarlock {
         messageBook['$channelId#tag#$tag'] = new SplayTreeSet();
       messageBook['$channelId#tag#$tag'].add(msg);
     }
+    messageBook[channelId].remove(msg);
     messageBook[channelId].add(msg);
   }
 

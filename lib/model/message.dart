@@ -15,14 +15,16 @@ class Message extends Comparable {
       'content': this.content,
       'hashtags': this.hashtags,
       'last_updated_at': this.lastUpdatedAt,
-      'likes': this.likes,
+      'likes': this.likes.toString(),
     });
   }
 
   static Message fromJSON(String msgJSON) {
     Map<String, dynamic> m = json.decode(msgJSON);
+    if (!m.containsKey('likes')) m['likes'] = 0;
     return Message(m['channel_id'], m['sender_id'], m['content'], m['hashtags'],
-        m['last_updated_at']);
+        m['last_updated_at'],
+        likes: int.parse(m['likes']));
   }
 
   @override
@@ -38,7 +40,6 @@ class Message extends Comparable {
           channelId == other.channelId &&
           senderId == other.senderId &&
           content == other.content &&
-          hashtags == other.hashtags &&
           lastUpdatedAt == other.lastUpdatedAt;
 
   @override

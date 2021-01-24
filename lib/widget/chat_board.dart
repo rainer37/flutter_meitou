@@ -55,7 +55,8 @@ class _ChatBoardState extends State<ChatBoard> {
           MessageWarlock.summon().addMessageToChannel(
               channelId,
               Message(msg['channel_id'], msg['sender_id'], msg['content'],
-                  msg['hashtags'], msg['last_updated_at']));
+                  msg['hashtags'], msg['last_updated_at'],
+                  likes: msg['likes'] != null ? (int.parse(msg['likes'])) : 0));
           MessageWarlock.summon().rinseChannel(channelId);
         }
         // MeitouConfig.setConfig('channelFetched', true);
@@ -356,6 +357,7 @@ class _ChatBoardState extends State<ChatBoard> {
 
   void _likeMessage(Message msg) {
     print('sending $msg likes to server');
+    sw.sendMessage(msg.toJSON());
   }
 
   Future<bool> _onPageExit() {
