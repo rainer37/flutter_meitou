@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter_meitou/model/config.dart';
-import 'package:flutter_meitou/widget/EduPage.dart';
+import 'package:flutter_meitou/widget/edu_page.dart';
 import 'package:flutter_meitou/widget/chat_page.dart';
 import 'package:flutter_meitou/widget/login_page.dart';
 import 'package:flutter_meitou/widget/user_profile_page.dart';
+
+import 'model/color_unicorn.dart';
 
 void main() => runApp(MyApp());
 
@@ -68,17 +70,32 @@ class _RandomWordsState extends State<RandomWords> {
       elevation: 0,
       title: Text('来看看大家都在聊个啥'),
       actions: [
-        IconButton(icon: Icon(Icons.add_circle), onPressed: _addChannel)
+        IconButton(
+            icon: Icon(
+              Icons.add_circle,
+              color: kLightIcon,
+            ),
+            onPressed: _addChannel)
       ],
     );
     appbars[1] = AppBar(
       elevation: 0,
-      title: Text('美投君的精选视频'),
+      title: Text(
+        '美投君的精选视频',
+        style: TextStyle(color: kLightTextTitle),
+      ),
     );
     appbars[2] = AppBar(
       elevation: 0,
       title: Text('我的信息'),
-      actions: [IconButton(icon: Icon(Icons.settings), onPressed: _moreOnMe)],
+      actions: [
+        IconButton(
+            icon: Icon(
+              Icons.settings,
+              color: kLightIcon,
+            ),
+            onPressed: _moreOnMe)
+      ],
     );
   }
 
@@ -143,11 +160,11 @@ class _RandomWordsState extends State<RandomWords> {
       body: children[_index],
       bottomNavigationBar: new Theme(
           data: Theme.of(context).copyWith(
-            canvasColor: Colors.lightGreen,
+            canvasColor: kHeavyBackground,
             primaryColor: Colors.yellow,
             textTheme: Theme.of(context)
                 .textTheme
-                .copyWith(caption: new TextStyle(color: Colors.white)),
+                .copyWith(caption: new TextStyle(color: kLightBackground)),
           ),
           child: new BottomNavigationBar(
             elevation: 0,

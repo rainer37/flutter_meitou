@@ -1,6 +1,7 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_meitou/model/color_unicorn.dart';
 import 'package:flutter_meitou/model/config.dart';
 
 import 'package:amplify_core/amplify_core.dart';
@@ -106,9 +107,6 @@ class _UserProfileState extends State<UserProfile> {
                   ),
                 ],
               )),
-          Container(
-            color: Colors.blue,
-          ),
         ],
       ),
     );
@@ -118,7 +116,7 @@ class _UserProfileState extends State<UserProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
-            color: Color(0xFFf4ebc1),
+            color: kLightBackground,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

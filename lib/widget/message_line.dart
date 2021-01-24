@@ -12,8 +12,9 @@ const defaultAvatarUrl =
 class MessageLine extends StatefulWidget {
   final Message msg;
   final Function(String) addTagCallBack;
+  final Function(Message) likeMessage;
 
-  MessageLine(this.msg, this.addTagCallBack);
+  MessageLine(this.msg, this.addTagCallBack, this.likeMessage);
   @override
   _MessageLineState createState() => _MessageLineState();
 }
@@ -39,7 +40,7 @@ class _MessageLineState extends State<MessageLine> {
   }
 
   void _fetchUserInfo(senderId) async {
-    MeitouConfig.setConfig('USER_FETCHING#$senderId', 0);
+    MeitouConfig.setConfig('USER_FETCHING#$senderId', 0); // simple locking
     print('fetching user id $senderId');
     var url = "${MeitouConfig.getConfig('restEndpointUrl')}/user/$senderId";
     http.Response response = await http.get(url);
@@ -96,6 +97,7 @@ class _MessageLineState extends State<MessageLine> {
             onPressed: () {
               Message target = MessageWarlock.summon()
                   .morphMessage(widget.msg.channelId, widget.msg);
+              widget.likeMessage(target);
               setState(() {
                 // update action icon
                 widget.msg.likes = target.likes;

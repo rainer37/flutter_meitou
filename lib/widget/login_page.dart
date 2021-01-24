@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_meitou/model/color_unicorn.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
@@ -136,7 +137,7 @@ class _LoginPageState extends State<LoginPage> {
                   FocusScope.of(context).requestFocus(new FocusNode());
                 },
                 child: Container(
-                  color: Colors.lightGreen,
+                  color: kHeavyBackground,
                   child: Column(
                     children: [
                       Container(

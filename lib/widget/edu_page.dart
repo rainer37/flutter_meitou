@@ -7,11 +7,15 @@ class EduPage extends StatelessWidget {
       color: Color(0xFFf4ebc1),
       child: Column(children: [
         Container(
+            height: MediaQuery.of(context).size.height * 0.3,
+            width: double.infinity,
             padding: EdgeInsets.all(10),
             child: Image(
                 image: NetworkImage(
                     'https://i.ytimg.com/vi/uAeBpzWyU2c/maxresdefault.jpg'))),
         Container(
+            height: MediaQuery.of(context).size.height * 0.3,
+            width: double.infinity,
             padding: EdgeInsets.all(10),
             child: Image(
                 image: NetworkImage(

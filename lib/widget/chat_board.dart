@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_meitou/model/color_unicorn.dart';
 import 'package:flutter_meitou/model/message_warlock.dart';
 import 'package:flutter_meitou/model/channel.dart';
 import 'package:flutter_meitou/model/config.dart';
@@ -89,14 +90,14 @@ class _ChatBoardState extends State<ChatBoard> {
       WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToEnd());
     }
     return Container(
-      color: Colors.lightGreen,
+      color: kHeavyBackground,
       child: SafeArea(
           child: Scaffold(
               endDrawer: Container(
                   width: MediaQuery.of(context).size.width * 0.8,
                   child: Drawer(
                     child: Container(
-                      color: Color(0xFFf4ebc1),
+                      color: kLightBackground,
                       child: ListView(
                         // Important: Remove any padding from the ListView.
                         padding: EdgeInsets.zero,
@@ -201,6 +202,19 @@ class _ChatBoardState extends State<ChatBoard> {
                   },
                 ),
                 // actions: [IconButton(icon: Icon(Icons.menu), onPressed: () => {})]
+                actions: [
+                  Builder(
+                    builder: (context) => IconButton(
+                      icon: Icon(
+                        Icons.filter_list,
+                        color: kLightIcon,
+                      ),
+                      onPressed: () => Scaffold.of(context).openEndDrawer(),
+                      tooltip: MaterialLocalizations.of(context)
+                          .openAppDrawerTooltip,
+                    ),
+                  ),
+                ],
               ),
               body: Container(
                 color: Colors.lightGreen,
@@ -213,7 +227,7 @@ class _ChatBoardState extends State<ChatBoard> {
                                   .requestFocus(new FocusNode());
                             },
                             child: Container(
-                              color: Color(0xFFf4ebc1),
+                              color: kLightBackground,
                               child: ListView.separated(
                                 controller: _scrollController,
                                 separatorBuilder: (context, index) => Divider(
@@ -227,14 +241,15 @@ class _ChatBoardState extends State<ChatBoard> {
                                       MessageWarlock.summon()
                                           .castMessagesInChannel(
                                               widget.channel.id)[index],
-                                      _addTagToInput);
+                                      _addTagToInput,
+                                      _likeMessage);
                                 },
                               ),
                             ))),
                     Row(
                       children: [
                         Container(
-                            color: Colors.lightGreen,
+                            color: kHeavyBackground,
                             width: MediaQuery.of(context).size.width * 0.8,
                             child: Padding(
                               padding: EdgeInsets.only(left: 10, right: 10),
@@ -244,7 +259,7 @@ class _ChatBoardState extends State<ChatBoard> {
                                 keyboardType: TextInputType.multiline,
                                 controller: _controller,
                                 style: TextStyle(
-                                    backgroundColor: Colors.lightGreen),
+                                    backgroundColor: kHeavyBackground),
                                 decoration: InputDecoration(
                                     hintText: '想什么呢，跟我们说说吧',
                                     suffixIcon: IconButton(
@@ -258,7 +273,7 @@ class _ChatBoardState extends State<ChatBoard> {
                           padding: EdgeInsets.only(right: 10, top: 5),
                           width: MediaQuery.of(context).size.width * 0.2,
                           child: FlatButton(
-                              color: Color(0xFFf4ebc1),
+                              color: kLightIcon,
                               onPressed: () {
                                 print('send button');
                                 _sendClicked();
@@ -273,7 +288,7 @@ class _ChatBoardState extends State<ChatBoard> {
                     Row(
                       children: [
                         Container(
-                            color: Colors.lightGreen,
+                            color: kHeavyBackground,
                             width: MediaQuery.of(context).size.width * 0.6,
                             child: Padding(
                                 padding: EdgeInsets.only(left: 10, right: 10),
@@ -294,7 +309,7 @@ class _ChatBoardState extends State<ChatBoard> {
                           padding: EdgeInsets.only(right: 10, top: 5),
                           width: MediaQuery.of(context).size.width * 0.2,
                           child: FlatButton(
-                              color: Color(0xFFf4ebc1),
+                              color: kLightIcon,
                               onPressed: () {
                                 print('IMG button');
                                 // _imagePicker();
@@ -308,7 +323,7 @@ class _ChatBoardState extends State<ChatBoard> {
                           padding: EdgeInsets.only(right: 10, top: 5),
                           width: MediaQuery.of(context).size.width * 0.2,
                           child: FlatButton(
-                              color: Color(0xFFf4ebc1),
+                              color: kLightIcon,
                               onPressed: () {
                                 print('SQ button');
                               },
@@ -337,6 +352,10 @@ class _ChatBoardState extends State<ChatBoard> {
       //   _img = File(galleryFile.path);
       // });
     }
+  }
+
+  void _likeMessage(Message msg) {
+    print('sending $msg likes to server');
   }
 
   Future<bool> _onPageExit() {
