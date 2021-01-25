@@ -309,7 +309,7 @@ class _ChatBoardState extends State<ChatBoard> {
                                           onPressed: () {
                                             _tagController.clear();
                                           })),
-                                  onFieldSubmitted: _updateTags,
+                                  onFieldSubmitted: _isTagsValid,
                                   style: TextStyle(fontSize: 13),
                                 ))),
                         Container(
@@ -332,7 +332,8 @@ class _ChatBoardState extends State<ChatBoard> {
                           child: FlatButton(
                               color: kLightIcon,
                               onPressed: () {
-                                print('SQ button');
+                                print('firing a SQ');
+                                _sendSQClicked();
                               },
                               child: Icon(
                                 Icons.question_answer,
@@ -376,7 +377,7 @@ class _ChatBoardState extends State<ChatBoard> {
 
   void _addTagToInput(tag) {
     print('adding tag');
-    this.setState(() async {
+    this.setState(() {
       if (_tagController.text == "") {
         HapticFeedback.lightImpact();
         _tagController.text += tag;
@@ -386,55 +387,70 @@ class _ChatBoardState extends State<ChatBoard> {
             _tagController.text != tag) {
           HapticFeedback.lightImpact();
           _tagController.text += ',$tag';
-        } else {
-          if (await Vibration.hasVibrator()) {
-            Vibration.vibrate();
-          }
         }
       }
     });
   }
 
-  void _updateTags(text) {
-    if (!RegExp(r"^[a-zA-Z]+(,[a-zA-Z]+)*$").hasMatch(text)) {
+  void _showTagFormatWarning() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("标签格式不合格"),
+          content: Text(
+              "请输入一个标签，或多个以逗号隔开的标签序列。每个标签只能包含大小写英文字母，例如：BABA或者TLSA,AMZ,GOOG"),
+          actions: [
+            FlatButton(
+              child: Text("懂了"),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _tagController.clear();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  bool _isTagsValid(tags) {
+    if (!RegExp(r"^[a-zA-Z]+(,[a-zA-Z]+)*$").hasMatch(tags)) {
       // show the dialog
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text("标签格式不合格"),
-            content: Text("请输入以逗号隔开的标签序列。例如：TLSA,AMZ,GOOG"),
-            actions: [
-              FlatButton(
-                child: Text("懂了"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  _tagController.clear();
-                },
-              ),
-            ],
-          );
-        },
-      );
+      return false;
     } else {
-      print('tags entered: $text');
+      print('tags entered: $tags');
+      return true;
     }
   }
 
-  void _sendClicked() {
-    if (_controller.text == "" || _tagController.text == "") return;
+  void _sendRaw(String extraTag) {
+    if (_controller.text == "" ||
+        _tagController.text == "" ||
+        !_isTagsValid(_tagController.text)) {
+      _showTagFormatWarning();
+      return;
+    }
     print('entered [$_controller.text] in channel ${widget.channel.name}');
     String curUserId = MeitouConfig.getConfig('user_id');
     if (curUserId == null) {
-      print('why not logged in');
+      print('why not logged in first then send a special message');
       return;
     }
     String msg = Message(widget.channel.id, curUserId, _controller.text,
-            _tagController.text, '')
+            _tagController.text + (extraTag != '' ? ',$extraTag' : ''), '')
         .toJSON();
     sw.sendMessage(msg);
     _controller.clear();
     FocusScope.of(context).requestFocus(new FocusNode());
+  }
+
+  void _sendSQClicked() {
+    _sendRaw('SQ');
+  }
+
+  void _sendClicked() {
+    _sendRaw('');
   }
 
   Widget _buildChip(String text, Color color) {

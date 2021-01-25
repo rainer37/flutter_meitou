@@ -1,7 +1,5 @@
 import 'dart:collection';
 
-import 'package:flutter_meitou/model/config.dart';
-
 import 'message.dart';
 
 class MessageWarlock {

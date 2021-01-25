@@ -12,6 +12,9 @@ import 'dart:convert' as convert;
 
 const defaultAvatarUrl =
     'https://i1.sndcdn.com/avatars-000617335083-cmq67l-t500x500.jpg';
+const SQ_TAG = 'SQ';
+const MSG_TAG = 'MSG';
+const reversedTags = [SQ_TAG];
 
 class MessageLine extends StatefulWidget {
   final Message msg;
@@ -25,10 +28,13 @@ class MessageLine extends StatefulWidget {
 
 class _MessageLineState extends State<MessageLine> {
   User sender;
+  String msgType;
 
   @override
   void initState() {
     super.initState();
+    msgType =
+        widget.msg.hashtags.split(',').contains(SQ_TAG) ? SQ_TAG : MSG_TAG;
     // print('init messageLine ${widget.msg}');
     if (!MeitouConfig.containsConfig('USER#${widget.msg.senderId}')) {
       if (sender == null) {
@@ -51,7 +57,7 @@ class _MessageLineState extends State<MessageLine> {
       //   print('delayed');
       // }
       print('fetching');
-      Timer.periodic(Duration(seconds: 1), (timer) {
+      Timer.periodic(Duration(milliseconds: 500), (timer) {
         print('delayed');
         if (MeitouConfig.containsConfig('USER#$senderId')) {
           User user = MeitouConfig.getConfig('USER#$senderId');
@@ -97,7 +103,10 @@ class _MessageLineState extends State<MessageLine> {
   }
 
   Widget _buildHashTagRow() {
-    List<String> hashTags = widget.msg.hashtags.split(',');
+    List<String> hashTags = widget.msg.hashtags
+        .split(',')
+        .where((tag) => !reversedTags.contains(tag))
+        .toList();
     return Row(
         children: List<Widget>.generate(hashTags.length, (int index) {
       return GestureDetector(
@@ -185,63 +194,63 @@ class _MessageLineState extends State<MessageLine> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(bottom: 10, top: 10, left: 10, right: 20),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-              child: GestureDetector(
-                  onDoubleTap: () {
-                    print('拍一拍');
-                  },
-                  onTap: () {
-                    print('${sender.name} avatar clicked');
-                    FocusScope.of(context).requestFocus(new FocusNode());
-                    showMenu();
-                  },
-                  child: CircleAvatar(
-                    backgroundImage: NetworkImage(sender.avatarUrl),
-                    backgroundColor: kHeavyBackground,
-                    radius: 30,
+    return GestureDetector(
+        onLongPress: () {
+          print('long pressing message');
+          HapticFeedback.heavyImpact();
+          showModalBottomSheet(
+              context: context,
+              builder: (BuildContext context) {
+                return Container(
+                  color: Colors.lightGreen,
+                  child: SafeArea(
+                      child: Container(
+                    height: MediaQuery.of(context).size.height * 0.35,
+                    color: Colors.lightGreen,
+                    child: Column(
+                      children: [
+                        _buildMessageAction('打赏', _actionTip),
+                        Divider(
+                          height: 1,
+                        ),
+                        _buildMessageAction('我看行!!!', _actionLike),
+                        Divider(
+                          height: 1,
+                        ),
+                        _buildMessageAction('不懂???', _actionLike),
+                        Divider(
+                          height: 1,
+                        ),
+                        _buildMessageAction('什么玩意儿?!', _actionDislike),
+                      ],
+                    ),
                   )),
-              flex: 1),
-          Expanded(
-              child: GestureDetector(
-                  onLongPress: () {
-                    print('long pressing message');
-                    HapticFeedback.heavyImpact();
-                    showModalBottomSheet(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return Container(
-                            color: Colors.lightGreen,
-                            child: SafeArea(
-                                child: Container(
-                              height: MediaQuery.of(context).size.height * 0.35,
-                              color: Colors.lightGreen,
-                              child: Column(
-                                children: [
-                                  _buildMessageAction('打赏', _actionTip),
-                                  Divider(
-                                    height: 1,
-                                  ),
-                                  _buildMessageAction('我看行!!!', _actionLike),
-                                  Divider(
-                                    height: 1,
-                                  ),
-                                  _buildMessageAction('不懂???', _actionLike),
-                                  Divider(
-                                    height: 1,
-                                  ),
-                                  _buildMessageAction(
-                                      '什么玩意儿?!', _actionDislike),
-                                ],
-                              ),
-                            )),
-                          );
-                        });
-                  },
+                );
+              });
+        },
+        child: Container(
+          color: msgType == SQ_TAG ? Colors.amber : kLightBackground,
+          padding: EdgeInsets.only(bottom: 10, top: 10, left: 10, right: 20),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                  child: GestureDetector(
+                      onDoubleTap: () {
+                        print('拍一拍');
+                      },
+                      onTap: () {
+                        print('${sender.name} avatar clicked');
+                        FocusScope.of(context).requestFocus(new FocusNode());
+                        showMenu();
+                      },
+                      child: CircleAvatar(
+                        backgroundImage: NetworkImage(sender.avatarUrl),
+                        backgroundColor: kHeavyBackground,
+                        radius: 30,
+                      )),
+                  flex: 1),
+              Expanded(
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -296,12 +305,12 @@ class _MessageLineState extends State<MessageLine> {
                                 child: _buildHashTagRow()),
                           ],
                         )
-                      ])),
-              flex: 5),
-          Expanded(flex: 1, child: Container())
-        ],
-      ),
-    );
+                      ]),
+                  flex: 5),
+              Expanded(flex: 1, child: Container())
+            ],
+          ),
+        ));
   }
 
   showMenu() {

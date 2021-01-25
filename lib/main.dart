@@ -51,7 +51,7 @@ class _RandomWordsState extends State<RandomWords> {
   var _index = 0;
   final List<Widget> children = [ChatPage(), EduPage(), UserProfile()];
 
-  final List<Widget> appbars = [
+  final List<Widget> appBars = [
     Placeholder(),
     Placeholder(),
     Placeholder(),
@@ -66,7 +66,7 @@ class _RandomWordsState extends State<RandomWords> {
       title: Text('美投'),
       actions: [IconButton(icon: Icon(Icons.list), onPressed: _pushSaved)],
     );
-    appbars[0] = AppBar(
+    appBars[0] = AppBar(
       elevation: 0,
       title: Text('来看看大家都在聊个啥'),
       actions: [
@@ -78,14 +78,14 @@ class _RandomWordsState extends State<RandomWords> {
             onPressed: _addChannel)
       ],
     );
-    appbars[1] = AppBar(
+    appBars[1] = AppBar(
       elevation: 0,
       title: Text(
         '美投君的精选视频',
         style: TextStyle(color: kLightTextTitle),
       ),
     );
-    appbars[2] = AppBar(
+    appBars[2] = AppBar(
       elevation: 0,
       title: Text('我的信息'),
       actions: [
@@ -156,7 +156,7 @@ class _RandomWordsState extends State<RandomWords> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appbars[_index],
+      appBar: appBars[_index],
       body: children[_index],
       bottomNavigationBar: new Theme(
           data: Theme.of(context).copyWith(
