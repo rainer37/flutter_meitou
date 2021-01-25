@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_meitou/model/channel.dart';
+import 'package:flutter_meitou/model/color_unicorn.dart';
 import 'package:flutter_meitou/model/config.dart';
 import 'package:flutter_meitou/widget/channel_button.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
@@ -38,7 +41,8 @@ class _ChatPageState extends State<ChatPage> {
           hotChannels.add(Channel(ch['channel_id'], ch['channel_name'],
               ch['channel_desc'], ch['owner'], int.parse(ch['sub_fee'])));
         }
-        MeitouConfig.setConfig('channelFetched', true);
+        MeitouConfig.setConfig(
+            'channelFetched', DateTime.now().millisecondsSinceEpoch);
       });
     } else {
       print(
@@ -47,6 +51,17 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget _buildChannelList(channels) {
+    if (!MeitouConfig.containsConfig('channelFetched')) {
+      return Container(
+        margin: EdgeInsets.only(top: 10),
+        height: MediaQuery.of(context).size.height * 0.33,
+        // color: Colors.lightGreen,
+        child: SpinKitWave(
+          color: kHeavyBackground,
+          size: 50.0,
+        ),
+      );
+    }
     return Container(
         height: MediaQuery.of(context).size.height * 0.33,
         margin: EdgeInsets.only(top: 10),

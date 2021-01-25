@@ -89,12 +89,13 @@ class _UserProfileState extends State<UserProfile> {
                           child: Text(
                             "初级股民",
                             style: TextStyle(
-                                fontSize: 20,
+                                fontSize: 15,
                                 fontWeight: FontWeight.bold,
                                 color: Color(0xFFf4ebc1)),
                           ),
                         ),
                         Container(
+                          padding: EdgeInsets.only(top: 2),
                           child: Text(
                             '美投币 $_coin',
                             style: TextStyle(
