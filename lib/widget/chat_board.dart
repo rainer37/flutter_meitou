@@ -12,7 +12,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
 import 'package:image_picker/image_picker.dart';
-import 'package:vibration/vibration.dart';
 
 class ChatBoard extends StatefulWidget {
   final Channel channel;
@@ -156,15 +155,15 @@ class _ChatBoardState extends State<ChatBoard> {
                           ),
                           ListTile(
                             title: Text('无任何神奇问题'),
-                            onTap: () {
-                              // Update the state of the app.
-                              // ...
-                              print('所有问题 tapped');
-                            },
+                          ),
+                          Container(
+                            color: kHeavyBackground,
+                            height: MediaQuery.of(context).size.height * 0.2,
                           ),
                           Divider(),
                           ListTile(
-                            title: Text('所有标签(#######)'),
+                            title: Text(
+                                '搜索标签(${'#' * MessageWarlock.summon().releaseTheRageOfTags(widget.channel.id).where((tag) => !reversedTags.contains(tag)).length})'),
                             onTap: () {
                               // Update the state of the app.
                               print('所有标签 tapped');
@@ -453,15 +452,37 @@ class _ChatBoardState extends State<ChatBoard> {
     _sendRaw('');
   }
 
-  Widget _buildChip(String text, Color color) {
+  Future<String> _getTagName(String tagRaw) {
+    if (tagRaw.startsWith('SENDER->')) {
+      String senderId = 'USER#${tagRaw.split('->')[1]}';
+      if (MeitouConfig.containsConfig(senderId)) {
+        return Future.value(
+            '$tagRaw#发送人:' + MeitouConfig.getConfig(senderId)?.name);
+      }
+      return Future<String>.delayed(Duration(seconds: 2), () {
+        return '$tagRaw#发送人:' + MeitouConfig.getConfig(senderId)?.name;
+      });
+    } else {
+      return Future.value(tagRaw);
+    }
+  }
+
+  Widget _buildChip(String tagRaw, Color color) {
+    String tagName = tagRaw;
+    if (tagRaw.startsWith('SENDER->')) {
+      tagName = tagRaw.split('#')[1];
+    }
     return ActionChip(
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      label: new Text(text),
+      label: new Text(tagName),
       backgroundColor: color,
       onPressed: () {
-        print('tag $text is selected');
+        print('tag $tagRaw is selected');
+        if (tagRaw.startsWith('SENDER->')) {
+          tagRaw = tagRaw.split('#')[0];
+        }
         List<Message> taggedMessages = MessageWarlock.summon()
-            .summonTaggedMessages(widget.channel.id, text);
+            .summonTaggedMessages(widget.channel.id, tagRaw);
         print('tagged messages: $taggedMessages');
         // MessageWarlock.summon().cleanse(widget.channel.id);
         // MessageWarlock.summon().polluteChannel(widget.channel.id);
@@ -472,36 +493,61 @@ class _ChatBoardState extends State<ChatBoard> {
         // });
         // Navigator.pop(context);
         showModalBottomSheet(
+            isScrollControlled: true,
             context: context,
             builder: (BuildContext context) {
               return Container(
+                height: MediaQuery.of(context).size.height * 0.7,
                 color: Colors.lightGreen,
-                child: SafeArea(
-                    child: Container(
-                  color: kLightBackground,
-                  child: ListView.separated(
-                    controller: _scrollController,
-                    separatorBuilder: (context, index) => Divider(
-                      color: Colors.lightGreen,
-                      height: 10,
+                child: Column(
+                  children: [
+                    Container(
+                      color: kHeavyBackground,
+                      height: MediaQuery.of(context).size.height * 0.05,
+                      child: Center(
+                        child: Text(
+                          tagName,
+                          style:
+                              TextStyle(color: kLightTextTitle, fontSize: 15),
+                        ),
+                      ),
                     ),
-                    itemCount: taggedMessages.length,
-                    itemBuilder: (context, index) {
-                      return MessageLine(
-                          taggedMessages[index], _addTagToInput, _likeMessage);
-                    },
-                  ),
-                )),
+                    SafeArea(
+                        child: Container(
+                      height: MediaQuery.of(context).size.height * 0.65,
+                      color: kLightBackground,
+                      child: ListView.builder(
+                        itemCount: taggedMessages.length,
+                        itemBuilder: (context, index) {
+                          return MessageLine(taggedMessages[index],
+                              _addTagToInput, _likeMessage);
+                        },
+                      ),
+                    )),
+                  ],
+                ),
               );
             });
       },
     );
   }
 
-  List<Widget> _buildHashTagChips() {
+  List<FutureBuilder<String>> _buildHashTagChips() {
     return MessageWarlock.summon()
         .releaseTheRageOfTags(widget.channel.id)
-        .map((e) => _buildChip(e, Colors.green))
+        .where((tag) => !reversedTags.contains(tag))
+        .map((tagRaw) => FutureBuilder(
+            future: _getTagName(tagRaw),
+            builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                Color color = Colors.green;
+                if (snapshot.data.startsWith('SENDER-'))
+                  color = Colors.amberAccent;
+                return _buildChip(snapshot.data, color);
+              } else {
+                return _buildChip('loading...', Colors.red);
+              }
+            }))
         .toList();
   }
 

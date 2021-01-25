@@ -10,12 +10,6 @@ import 'package:flutter_meitou/model/user.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
-const defaultAvatarUrl =
-    'https://i1.sndcdn.com/avatars-000617335083-cmq67l-t500x500.jpg';
-const SQ_TAG = 'SQ';
-const MSG_TAG = 'MSG';
-const reversedTags = [SQ_TAG];
-
 class MessageLine extends StatefulWidget {
   final Message msg;
   final Function(String) addTagCallBack;
