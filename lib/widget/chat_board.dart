@@ -42,11 +42,11 @@ class _ChatBoardState extends State<ChatBoard> {
 
   void _fetchChatHistory() async {
     String channelId = widget.channel.id;
-    print('fetching chat history');
     String lastMessageSeen =
         MessageWarlock.summon().lastSeenInChannel(channelId);
+    print('fetching chat history, last since $lastMessageSeen');
     var url =
-        "${MeitouConfig.getConfig('restEndpointUrl')}/chats/${channelId}/$lastMessageSeen";
+        "${MeitouConfig.getConfig('restEndpointUrl')}/chats/$channelId/$lastMessageSeen";
     var response = await http.get(url);
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
@@ -59,8 +59,8 @@ class _ChatBoardState extends State<ChatBoard> {
               Message(msg['channel_id'], msg['sender_id'], msg['content'],
                   msg['hashtags'], msg['last_updated_at'],
                   likes: msg['likes'] != null ? (int.parse(msg['likes'])) : 0));
-          MessageWarlock.summon().rinseChannel(channelId);
         }
+        MessageWarlock.summon().rinseChannel(channelId);
         // MeitouConfig.setConfig('channelFetched', true);
       });
     } else {
@@ -443,17 +443,41 @@ class _ChatBoardState extends State<ChatBoard> {
       label: new Text(text),
       backgroundColor: color,
       onPressed: () {
+        print('tag $text is selected');
         List<Message> taggedMessages = MessageWarlock.summon()
             .summonTaggedMessages(widget.channel.id, text);
-        print(taggedMessages);
-        MessageWarlock.summon().cleanse(widget.channel.id);
-        MessageWarlock.summon().polluteChannel(widget.channel.id);
-        setState(() {
-          for (Message msg in taggedMessages) {
-            MessageWarlock.summon().addMessageToChannel(widget.channel.id, msg);
-          }
-        });
-        Navigator.pop(context);
+        print('tagged messages: $taggedMessages');
+        // MessageWarlock.summon().cleanse(widget.channel.id);
+        // MessageWarlock.summon().polluteChannel(widget.channel.id);
+        // setState(() {
+        //   for (Message msg in taggedMessages) {
+        //     MessageWarlock.summon().addMessageToChannel(widget.channel.id, msg);
+        //   }
+        // });
+        // Navigator.pop(context);
+        showModalBottomSheet(
+            context: context,
+            builder: (BuildContext context) {
+              return Container(
+                color: Colors.lightGreen,
+                child: SafeArea(
+                    child: Container(
+                  color: kLightBackground,
+                  child: ListView.separated(
+                    controller: _scrollController,
+                    separatorBuilder: (context, index) => Divider(
+                      color: Colors.lightGreen,
+                      height: 10,
+                    ),
+                    itemCount: taggedMessages.length,
+                    itemBuilder: (context, index) {
+                      return MessageLine(
+                          taggedMessages[index], _addTagToInput, _likeMessage);
+                    },
+                  ),
+                )),
+              );
+            });
       },
     );
   }

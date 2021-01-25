@@ -1,5 +1,7 @@
 import 'dart:collection';
 
+import 'package:flutter_meitou/model/config.dart';
+
 import 'message.dart';
 
 class MessageWarlock {
@@ -45,7 +47,8 @@ class MessageWarlock {
   void addMessageToChannel(String channelId, Message msg) {
     if (messageBook[channelId] == null)
       messageBook[channelId] = new SplayTreeSet();
-    for (String tag in msg.hashtags.split(',')) {
+    for (String tag in msg.hashtags.split(',')
+      ..add('SENDER->${msg.senderId}')) {
       if (messageBook['$channelId#tag#$tag'] == null)
         messageBook['$channelId#tag#$tag'] = new SplayTreeSet();
       messageBook['$channelId#tag#$tag'].add(msg);
@@ -63,7 +66,8 @@ class MessageWarlock {
     return tags;
   }
 
-  List<Message> summonTaggedMessages(String channelId, tag) {
+  List<Message> summonTaggedMessages(String channelId, String tag) {
+    if (tag.startsWith('SENDER->')) {}
     return messageBook['$channelId#tag#$tag'] == null
         ? List.empty()
         : messageBook['$channelId#tag#$tag'].toList();
@@ -80,7 +84,10 @@ class MessageWarlock {
   }
 
   String lastSeenInChannel(String channelId) {
-    if (messageBook.containsKey('$channelId#dirty')) return '0';
+    if (messageBook.containsKey('$channelId#dirty')) {
+      cleanse(channelId);
+      return '0';
+    }
     return messageBook[channelId] == null
         ? '0'
         : messageBook[channelId].last.lastUpdatedAt;

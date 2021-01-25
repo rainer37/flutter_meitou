@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_meitou/model/color_unicorn.dart';
@@ -27,13 +29,14 @@ class _MessageLineState extends State<MessageLine> {
   @override
   void initState() {
     super.initState();
+    // print('init messageLine ${widget.msg}');
     if (!MeitouConfig.containsConfig('USER#${widget.msg.senderId}')) {
       if (sender == null) {
         // no local cache
-        if (!MeitouConfig.containsConfig(
-            'USER_FETCHING#${widget.msg.senderId}')) {
-          _fetchUserInfo(widget.msg.senderId);
-        }
+        // if (!MeitouConfig.containsConfig(
+        //     'USER_FETCHING#${widget.msg.senderId}')) {
+        _fetchUserInfo(widget.msg.senderId);
+//        }
       }
       sender = User('0', '神秘股民', '', defaultAvatarUrl, 0);
     } else {
@@ -42,6 +45,26 @@ class _MessageLineState extends State<MessageLine> {
   }
 
   void _fetchUserInfo(senderId) async {
+    if (MeitouConfig.containsConfig('USER_FETCHING#$senderId')) {
+      // while (!MeitouConfig.containsConfig('USER${widget.msg.senderId}')) {
+      //   Future.delayed(Duration(seconds: 1000));
+      //   print('delayed');
+      // }
+      print('fetching');
+      Timer.periodic(Duration(seconds: 1), (timer) {
+        print('delayed');
+        if (MeitouConfig.containsConfig('USER#$senderId')) {
+          User user = MeitouConfig.getConfig('USER#$senderId');
+          setState(() {
+            sender = user;
+            sender.name = user.name;
+            sender.avatarUrl = user.avatarUrl;
+          });
+          timer.cancel();
+        }
+      });
+      return;
+    }
     MeitouConfig.setConfig('USER_FETCHING#$senderId', 0); // simple locking
     print('fetching user id $senderId');
     var url = "${MeitouConfig.getConfig('restEndpointUrl')}/user/$senderId";
@@ -59,8 +82,12 @@ class _MessageLineState extends State<MessageLine> {
           jsonResponse['email'], avatarUrl, int.parse(jsonResponse['coins']));
       MeitouConfig.setConfig('USER#${jsonResponse['user_id']}', user);
 
+      print('user info fetched $jsonResponse');
+
       setState(() {
         sender = user;
+        sender.name = user.name;
+        sender.avatarUrl = user.avatarUrl;
       });
     } else {
       print(
@@ -165,6 +192,9 @@ class _MessageLineState extends State<MessageLine> {
         children: [
           Expanded(
               child: GestureDetector(
+                  onDoubleTap: () {
+                    print('拍一拍');
+                  },
                   onTap: () {
                     print('${sender.name} avatar clicked');
                     FocusScope.of(context).requestFocus(new FocusNode());
@@ -172,7 +202,7 @@ class _MessageLineState extends State<MessageLine> {
                   },
                   child: CircleAvatar(
                     backgroundImage: NetworkImage(sender.avatarUrl),
-                    backgroundColor: Colors.black,
+                    backgroundColor: kHeavyBackground,
                     radius: 30,
                   )),
               flex: 1),
@@ -340,7 +370,6 @@ class _MessageLineState extends State<MessageLine> {
                                       Icons.account_circle,
                                       color: kLightIcon,
                                     ),
-                                    onTap: () {},
                                   ),
                                   ListTile(
                                     title: Text(
@@ -351,7 +380,6 @@ class _MessageLineState extends State<MessageLine> {
                                       Icons.money,
                                       color: kLightIcon,
                                     ),
-                                    onTap: () {},
                                   ),
                                   ListTile(
                                     title: Text(
@@ -362,7 +390,6 @@ class _MessageLineState extends State<MessageLine> {
                                       Icons.mail,
                                       color: kLightTextTitle,
                                     ),
-                                    onTap: () {},
                                   ),
                                 ],
                               ),

@@ -49,18 +49,18 @@ class _UserProfileState extends State<UserProfile> {
 
   Widget _buildUserInfo() {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.15 + 20,
+      height: MediaQuery.of(context).size.height * 0.17 + 20,
       padding: EdgeInsets.all(10),
       child: Column(
         children: [
           Container(
-              height: MediaQuery.of(context).size.height * 0.15,
+              height: MediaQuery.of(context).size.height * 0.17,
               child: Row(
                 children: [
                   Container(
                     width: MediaQuery.of(context).size.width * 0.3,
                     child: CircleAvatar(
-                      radius: MediaQuery.of(context).size.height * 0.15,
+                      radius: MediaQuery.of(context).size.height * 0.17,
                       backgroundImage: NetworkImage(_avatar),
                     ),
                   ),

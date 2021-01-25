@@ -131,149 +131,156 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return loginStateCheckInProgress
         ? Container()
-        : Scaffold(
-            body: GestureDetector(
-                onTap: () {
-                  FocusScope.of(context).requestFocus(new FocusNode());
-                },
-                child: Container(
-                  color: kHeavyBackground,
-                  child: Column(
-                    children: [
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.3,
-                        child: CircleAvatar(
-                          radius: 100,
-                          backgroundImage: NetworkImage(
-                              'https://yt3.ggpht.com/ytc/AAUvwnh90LNf2_wRdm3PPbWtSL7I-h0jOIV0D9P7lqF7=s88-c-k-c0x00ffffff-no-rj'),
-                        ),
-                      ),
-                      Container(
-                        child: Padding(
-                          padding: EdgeInsets.only(left: 40, right: 40),
-                          child: TextField(
-                            autofocus: true,
-                            autocorrect: false,
-                            enableSuggestions: false,
-                            style: TextStyle(color: Colors.white),
-                            controller: _emailController,
-                            decoration: InputDecoration(
-                              hintText: '请输入您的邮箱地址',
-                              hintStyle: TextStyle(color: Colors.white),
-                              enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Colors.white, width: 1.0)),
-                              focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Colors.white, width: 1.0)),
-                              prefixIcon: const Icon(
-                                Icons.email,
-                                color: Colors.white,
-                              ),
-                            ),
-                            obscureText: false,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        child: Padding(
-                          padding: EdgeInsets.only(left: 40, right: 40),
-                          child: TextField(
-                            autocorrect: false,
-                            enableSuggestions: false,
-                            style: TextStyle(color: Colors.white),
-                            controller: _passwordController,
-                            decoration: InputDecoration(
-                              hintText: '请输入您的超级密码',
-                              hintStyle: TextStyle(color: Colors.white),
-                              enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Colors.white, width: 1.0)),
-                              focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Colors.white, width: 1.0)),
-                              prefixIcon: const Icon(
-                                Icons.lock,
-                                color: Colors.white,
-                              ),
-                            ),
-                            obscureText: true,
-                          ),
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+        : SafeArea(
+            child: Scaffold(
+                body: GestureDetector(
+                    onTap: () {
+                      FocusScope.of(context).requestFocus(new FocusNode());
+                    },
+                    child: Container(
+                      color: kHeavyBackground,
+                      child: Column(
                         children: [
-                          waitingForVeriCode
-                              ? Container(
-                                  margin: EdgeInsets.only(top: 30),
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.4,
-                                  child: TextField(
-                                    keyboardType: TextInputType.number,
-                                    cursorColor: Colors.white,
-                                    autocorrect: false,
-                                    enableSuggestions: false,
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 20),
-                                    controller: _codeController,
-                                    textAlign: TextAlign.center,
-                                    decoration: InputDecoration(
-                                      hintText: '验证码',
-                                      hintStyle: TextStyle(
-                                          color: Colors.white, fontSize: 20),
-                                      border: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Colors.white, width: 1.0)),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Colors.white, width: 1.0)),
-                                      focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Colors.white, width: 1.0)),
-                                    ),
-                                  ),
-                                )
-                              : Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.4,
-                                  padding: EdgeInsets.only(right: 5),
-                                  margin: EdgeInsets.only(top: 30),
-                                  child: RaisedButton(
-                                    padding: EdgeInsets.all(20),
-                                    onPressed: _loginClick,
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.3,
+                            child: CircleAvatar(
+                              radius: 100,
+                              backgroundImage: NetworkImage(
+                                  'https://yt3.ggpht.com/ytc/AAUvwnh90LNf2_wRdm3PPbWtSL7I-h0jOIV0D9P7lqF7=s88-c-k-c0x00ffffff-no-rj'),
+                            ),
+                          ),
+                          Container(
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 40, right: 40),
+                              child: TextField(
+                                autofocus: true,
+                                autocorrect: false,
+                                enableSuggestions: false,
+                                style: TextStyle(color: Colors.white),
+                                controller: _emailController,
+                                decoration: InputDecoration(
+                                  hintText: '请输入您的邮箱地址',
+                                  hintStyle: TextStyle(color: Colors.white),
+                                  enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.white, width: 1.0)),
+                                  focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.white, width: 1.0)),
+                                  prefixIcon: const Icon(
+                                    Icons.email,
                                     color: Colors.white,
-                                    textColor: Colors.lightGreen,
-                                    child: Text(
-                                      '登录',
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
-                                    ),
                                   ),
                                 ),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.4,
-                            padding: EdgeInsets.only(left: 5),
-                            margin: EdgeInsets.only(top: 30),
-                            child: RaisedButton(
-                              padding: EdgeInsets.all(20),
-                              onPressed:
-                                  waitingForVeriCode ? _verifyCode : _signUp,
-                              color: Colors.white,
-                              textColor: Colors.lightGreen,
-                              child: Text(
-                                waitingForVeriCode ? '验证' : '注册',
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
+                                obscureText: false,
                               ),
                             ),
-                          )
+                          ),
+                          Container(
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 40, right: 40),
+                              child: TextField(
+                                autocorrect: false,
+                                enableSuggestions: false,
+                                style: TextStyle(color: Colors.white),
+                                controller: _passwordController,
+                                decoration: InputDecoration(
+                                  hintText: '请输入您的超级密码',
+                                  hintStyle: TextStyle(color: Colors.white),
+                                  enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.white, width: 1.0)),
+                                  focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.white, width: 1.0)),
+                                  prefixIcon: const Icon(
+                                    Icons.lock,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                obscureText: true,
+                              ),
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              waitingForVeriCode
+                                  ? Container(
+                                      margin: EdgeInsets.only(top: 30),
+                                      width: MediaQuery.of(context).size.width *
+                                          0.4,
+                                      child: TextField(
+                                        keyboardType: TextInputType.number,
+                                        cursorColor: Colors.white,
+                                        autocorrect: false,
+                                        enableSuggestions: false,
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 20),
+                                        controller: _codeController,
+                                        textAlign: TextAlign.center,
+                                        decoration: InputDecoration(
+                                          hintText: '验证码',
+                                          hintStyle: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20),
+                                          border: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.white,
+                                                  width: 1.0)),
+                                          enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.white,
+                                                  width: 1.0)),
+                                          focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.white,
+                                                  width: 1.0)),
+                                        ),
+                                      ),
+                                    )
+                                  : Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.4,
+                                      padding: EdgeInsets.only(right: 5),
+                                      margin: EdgeInsets.only(top: 30),
+                                      child: RaisedButton(
+                                        padding: EdgeInsets.all(20),
+                                        onPressed: _loginClick,
+                                        color: Colors.white,
+                                        textColor: Colors.lightGreen,
+                                        child: Text(
+                                          '登录',
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.4,
+                                padding: EdgeInsets.only(left: 5),
+                                margin: EdgeInsets.only(top: 30),
+                                child: RaisedButton(
+                                  padding: EdgeInsets.all(20),
+                                  onPressed: waitingForVeriCode
+                                      ? _verifyCode
+                                      : _signUp,
+                                  color: Colors.white,
+                                  textColor: Colors.lightGreen,
+                                  child: Text(
+                                    waitingForVeriCode ? '验证' : '注册',
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
                         ],
                       ),
-                    ],
-                  ),
-                )));
+                    ))));
   }
 
   bool waitingForVeriCode = false;
