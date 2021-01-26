@@ -23,12 +23,15 @@ class MessageLine extends StatefulWidget {
 class _MessageLineState extends State<MessageLine> {
   User sender;
   String msgType;
+  Color checkMarkColor = kLightBackground;
 
   @override
   void initState() {
     super.initState();
+    // checkMarkColor = kLightBackground;
     msgType =
         widget.msg.hashtags.split(',').contains(SQ_TAG) ? SQ_TAG : MSG_TAG;
+    if (msgType == SQ_TAG) checkMarkColor = Colors.amber;
     // print('init messageLine ${widget.msg}');
     if (!MeitouConfig.containsConfig('USER#${widget.msg.senderId}')) {
       if (sender == null) {
@@ -169,7 +172,30 @@ class _MessageLineState extends State<MessageLine> {
     Navigator.pop(context);
   }
 
-  void _actionDislike() {}
+  void _actionDislike() {
+    final snackBar = SnackBar(
+      content: Container(
+        height: MediaQuery.of(context).size.height * 0.10,
+        child: Center(
+          child: Text(
+            'Don\'t be so mean, pleeeeeease',
+            style: TextStyle(color: kLightTextTitle, fontSize: 15),
+          ),
+        ),
+      ),
+      backgroundColor: kHeavyBackground,
+      action: SnackBarAction(
+        label: '好的',
+        textColor: kLightTextTitle,
+        onPressed: () {
+          // Some code to undo the change.
+          Scaffold.of(context).hideCurrentSnackBar();
+        },
+      ),
+    );
+    Navigator.pop(context);
+    Scaffold.of(context).showSnackBar(snackBar);
+  }
 
   Widget _buildMessageAction(String actionName, Function actionFunc) {
     return Expanded(
@@ -189,8 +215,32 @@ class _MessageLineState extends State<MessageLine> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+        onTap: () {
+          if (checkMarkColor == kLightBackground ||
+              checkMarkColor == Colors.amber) {
+            setState(() {
+              checkMarkColor = Colors.green;
+            });
+          } else {
+            setState(() {
+              checkMarkColor = kLightBackground;
+              if (msgType == SQ_TAG) checkMarkColor = Colors.amber;
+            });
+          }
+        },
         onLongPress: () {
           print('long pressing message');
+          if (checkMarkColor == kLightBackground ||
+              checkMarkColor == Colors.amber) {
+            setState(() {
+              checkMarkColor = Colors.green;
+            });
+          }
+          // else {
+          //   setState(() {
+          //     checkMarkColor = kLightBackground;
+          //   });
+          // }
           HapticFeedback.heavyImpact();
           showModalBottomSheet(
               context: context,
@@ -224,7 +274,7 @@ class _MessageLineState extends State<MessageLine> {
         },
         child: Container(
           color: msgType == SQ_TAG ? Colors.amber : kLightBackground,
-          padding: EdgeInsets.only(bottom: 10, top: 10, left: 10, right: 20),
+          padding: EdgeInsets.only(bottom: 10, top: 10, left: 10, right: 10),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -235,7 +285,7 @@ class _MessageLineState extends State<MessageLine> {
                       },
                       onTap: () {
                         print('${sender.name} avatar clicked');
-                        FocusScope.of(context).requestFocus(new FocusNode());
+                        // FocusScope.of(context).requestFocus(new FocusNode());
                         showMenu();
                       },
                       child: CircleAvatar(
@@ -301,7 +351,17 @@ class _MessageLineState extends State<MessageLine> {
                         )
                       ]),
                   flex: 5),
-              Expanded(flex: 1, child: Container())
+              Expanded(
+                flex: 1,
+                child: Center(
+                  child: Container(
+                      padding: EdgeInsets.only(top: 25),
+                      child: Icon(
+                        Icons.done,
+                        color: checkMarkColor,
+                      )),
+                ),
+              )
             ],
           ),
         ));

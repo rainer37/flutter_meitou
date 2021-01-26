@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_meitou/model/config.dart';
 import 'package:flutter_meitou/widget/edu_page.dart';
 import 'package:flutter_meitou/widget/chat_page.dart';
@@ -169,6 +170,7 @@ class _RandomWordsState extends State<RandomWords> {
           child: new BottomNavigationBar(
             elevation: 0,
             onTap: (index) {
+              HapticFeedback.mediumImpact();
               setState(() {
                 _index = index;
               });

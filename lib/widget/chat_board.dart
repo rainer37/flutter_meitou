@@ -483,7 +483,7 @@ class _ChatBoardState extends State<ChatBoard> {
         }
         List<Message> taggedMessages = MessageWarlock.summon()
             .summonTaggedMessages(widget.channel.id, tagRaw);
-        print('tagged messages: $taggedMessages');
+        // print('tagged messages: $taggedMessages');
         // MessageWarlock.summon().cleanse(widget.channel.id);
         // MessageWarlock.summon().polluteChannel(widget.channel.id);
         // setState(() {
@@ -492,6 +492,7 @@ class _ChatBoardState extends State<ChatBoard> {
         //   }
         // });
         // Navigator.pop(context);
+        // show filtered result in a separate bottom sheet
         showModalBottomSheet(
             isScrollControlled: true,
             context: context,
