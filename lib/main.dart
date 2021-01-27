@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:english_words/english_words.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_meitou/model/config.dart';
 import 'package:flutter_meitou/widget/edu_page.dart';
@@ -47,7 +46,6 @@ class RandomWords extends StatefulWidget {
 }
 
 class _RandomWordsState extends State<RandomWords> {
-  final _saved = Set<WordPair>();
   final _biggerFont = TextStyle(fontSize: 18.0);
   var _index = 0;
   final List<Widget> children = [ChatPage(), EduPage(), UserProfile()];
@@ -100,15 +98,17 @@ class _RandomWordsState extends State<RandomWords> {
     );
   }
 
-  void _moreOnMe() {
+  void _moreOnMe() async {
     Navigator.of(context)
         .push(MaterialPageRoute<void>(builder: (BuildContext context) {
       return Scaffold(
           appBar: AppBar(
             elevation: 0,
-            title: Center(child: Text('我的其他骚操作')),
+            title: Text('我的其他骚操作'),
           ),
-          body: Center(child: Text('Operational Excellence')));
+          body: Container(
+              color: kLightBackground,
+              child: Center(child: Text('Operational Excellence'))));
     }));
   }
 
@@ -120,37 +120,20 @@ class _RandomWordsState extends State<RandomWords> {
             elevation: 0,
             title: Text('开一个新的频道吧'),
           ),
-          body: Center(child: Text('你有什么想说的')));
+          body: Container(
+              color: kLightBackground, child: Center(child: Text('你有什么想说的'))));
     }));
   }
 
   void _pushSaved() {
     Navigator.of(context)
         .push(MaterialPageRoute<void>(builder: (BuildContext context) {
-      final tiles = this._saved.map(
-        (WordPair pair) {
-          return ListTile(
-            title: Text(
-              pair.asPascalCase,
-              style: _biggerFont,
-            ),
-            onTap: () {
-              print("saved item tapped $pair");
-            },
-          );
-        },
-      );
-      final divided = ListTile.divideTiles(
-        context: context,
-        tiles: tiles,
-      ).toList();
-
       return Scaffold(
           appBar: AppBar(
             elevation: 0,
             title: Text('Saved Hearted'),
           ),
-          body: ListView(children: divided));
+          body: Container());
     }));
   }
 
