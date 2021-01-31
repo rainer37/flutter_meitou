@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "216684889074",
+    "firebase_url": "https://byttest-27a62.firebaseio.com",
+    "project_id": "byttest-27a62",
+    "storage_bucket": "byttest-27a62.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:216684889074:android:0aad8f61e1d99565ada16b",
+        "android_client_info": {
+          "package_name": "com.example.flutter_meitou"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "216684889074-nk9e7gb6utu3akodglm9jfioh5mpq0n9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMpj39R5Wm6EHf5m48kCTrEIYNOKU4vtw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "216684889074-nk9e7gb6utu3akodglm9jfioh5mpq0n9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "216684889074-uofrqknst7ovdr5asu62jh394phdbvju.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.flutterMeitou"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

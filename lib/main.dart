@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_meitou/model/config.dart';
@@ -7,8 +9,11 @@ import 'package:flutter_meitou/widget/login_page.dart';
 import 'package:flutter_meitou/widget/user_profile_page.dart';
 
 import 'model/color_unicorn.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -46,7 +51,8 @@ class RandomWords extends StatefulWidget {
 }
 
 class _RandomWordsState extends State<RandomWords> {
-  final _biggerFont = TextStyle(fontSize: 18.0);
+  final FirebaseMessaging _fcm = FirebaseMessaging();
+
   var _index = 0;
   final List<Widget> children = [ChatPage(), EduPage(), UserProfile()];
 
@@ -56,10 +62,45 @@ class _RandomWordsState extends State<RandomWords> {
     Placeholder(),
   ];
 
+  void configureFCM() async {
+    _fcm.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+        print("${message['data']['default']}");
+        dynamic msgObj = jsonDecode(message['data']['default']);
+        print(msgObj['notification']);
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: ListTile(
+              title: Text(msgObj['notification']['title']),
+              subtitle: Text(msgObj['notification']['body']),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Ok'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          ),
+        );
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print("onLaunch: $message");
+        // TODO optional
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print("onResume: $message");
+        // TODO optional
+      },
+    );
+    print(await _fcm.getToken());
+  }
+
   @override
   void initState() {
     super.initState();
-
+    configureFCM();
     final mainAppBar = AppBar(
       elevation: 0,
       title: Text('美投'),
@@ -108,11 +149,21 @@ class _RandomWordsState extends State<RandomWords> {
           ),
           body: Container(
               color: kLightBackground,
-              child: Center(child: Text('Operational Excellence'))));
+              child: Column(
+                children: [
+                  FlatButton(
+                      onPressed: () {
+                        print('one pressed');
+                        _fcm.subscribeToTopic('puppies');
+                      },
+                      child: Text('One')),
+                  FlatButton(onPressed: () {}, child: Text('Two'))
+                ],
+              )));
     }));
   }
 
-  void _addChannel() {
+  void _addChannel() async {
     Navigator.of(context)
         .push(MaterialPageRoute<void>(builder: (BuildContext context) {
       return Scaffold(

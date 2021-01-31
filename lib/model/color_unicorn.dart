@@ -8,3 +8,18 @@ const Color kHeavyTextTitle = Colors.black;
 
 const Color kLightIcon = Color(0xFFf4ebc1);
 const Color kHeavyIcon = Colors.green;
+
+const List<Color> tagColors = <Color>[
+  Colors.green,
+  Colors.greenAccent,
+  Colors.white,
+  Colors.yellow,
+  Colors.deepOrangeAccent,
+  Colors.cyanAccent,
+  Colors.grey,
+  Colors.lightBlueAccent
+];
+
+Color pickColor(String tag) {
+  return tagColors[tag.hashCode % tagColors.length];
+}

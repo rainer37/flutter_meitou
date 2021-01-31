@@ -116,7 +116,7 @@ class _MessageLineState extends State<MessageLine> {
               padding: EdgeInsets.only(top: 2, left: 5, right: 5, bottom: 2),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: Colors.green,
+                color: pickColor(hashTags[index].toString()),
               ),
               child: Text(
                 '#' + hashTags[index].toString(),
